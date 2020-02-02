@@ -47,8 +47,6 @@ if __name__=='__main__':
     #driver = webdriver.Chrome()
     driver.get(url)
 
-    #driver.set_script_timeout(4)
-
     frame = driver.find_element_by_id('chart_iframe')
     driver.switch_to.frame(frame)
 
