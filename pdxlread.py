@@ -12,3 +12,4 @@ df = df.dropna() #欠損値(NaN)を除外
 df = df.loc[:,['date','sp500', 'usd', 'nikke']]
 #print(df)
 df.to_csv('C:\\Users\\sadaco\\Downloads\\nt1570.csv', header=True, index=False)
+df.to_csv('C:\\Users\\sadaco\\Downloads\\N225BP.csv', header=False, index=False)

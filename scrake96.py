@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 
 import os
-import sys
 import time
 
 import pandas as pd
@@ -13,9 +12,7 @@ if __name__=='__main__':
     url = 'https://96ut.com/stock/jikei.php?code=1570'
     dfs = pd.read_html(url, header=0, index_col=0)
     df = dfs[0]
-    #df = dfs[0]['初値']
-    df = df.sort_values('日付')
-    #print(df)
+    df = df.sort_values('日付') #下が最新になるようにソート
 
     file_path = os.environ['HOMEPATH'] + '\\Downloads\\t1570.csv'
 
@@ -27,20 +24,15 @@ if __name__=='__main__':
 
     #driver.set_page_load_timeout(4) #ページがロードされるまでの待ち時間を設定する
     #driver.set_script_timeout(1) #timeoutを超えるとエラー発生
-    #time.sleep(2)
     
     try:
-        elem = driver.find_elements_by_css_selector('a[download="UPRO.csv"]')[0]
+        driver.implicitly_wait(4) #次の要素が見つかるまで(秒)待機
+        elem = driver.find_elements_by_css_selector('a[download="UPRO.csv"]')[0] #element(s)?
 
         if elem.is_displayed():
             elem.click()
-        else:
-            raise Exception
-        
-    except:
-        print(sys.exc_info())
-    finally:
-        time.sleep(2)
+    except Exception as e:
+        print(e)
 
 #usd/jpy
     url = 'https://www.macrotrends.net/2550/dollar-yen-exchange-rate-historical-chart'
@@ -48,15 +40,17 @@ if __name__=='__main__':
     driver.get(url)
 
     frame = driver.find_element_by_id('chart_iframe')
-    driver.switch_to.frame(frame)
+    driver.switch_to.frame(frame) #iframeにスイッチ
 
     try:
+        driver.implicitly_wait(4) #連続して使う場合はどういう扱いになるのか
         elem = driver.find_element_by_id('dataDownload')
-        elem.click()
-    except:
-        print(sys.exc_info())
+
+        if elem.is_displayed():
+            elem.click()
+    except Exception as e:
+        print(e)
     finally:
-        pass
-        time.sleep(2)
+        time.sleep(2) #download待ち
         driver.close()
         driver.quit()
