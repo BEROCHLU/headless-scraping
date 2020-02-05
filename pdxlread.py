@@ -1,15 +1,21 @@
+import sys
 import openpyxl
 import pandas as pd
 
-#wb = openpyxl.load_workbook('C:\\Users\\sadaco\\Downloads\\n225bp.xlsx', data_only=True) #T:\\mydocs\\BCPad\\data\\n225bp.xlsx
-#ws = wb.active
-#ws = wb['data'] # シート変更
-#print(ws['C2'].value)
+book = openpyxl.load_workbook('C:\\Users\\sadaco\\Downloads\\new225bp.xlsx', read_only=True, data_only=True)
+check_cell = book['data']['C2'].value
+print(check_cell) #読めているかテスト
+book.close() # Only affects read_only and write_only
 #デーブル範囲解除で読める
 
-df = pd.read_excel('C:\\Users\\sadaco\\Downloads\\n225bp.xlsx', sheet_name='data')
-df = df.dropna() #欠損値(NaN)を除外
-df = df.loc[:,['date','sp500', 'usd', 'nikke']]
+if check_cell == None:
+    print('cell is empty')
+    sys.exit()
+
+df = pd.read_excel('C:\\Users\\sadaco\\Downloads\\new225bp.xlsx', sheet_name='data')
 #print(df)
+df = df.dropna() #欠損値(NaN)を除外
+df = df.loc[:,['date','upro', 'fxy', 't1570']]
+
 df.to_csv('C:\\Users\\sadaco\\Downloads\\nt1570.csv', header=True, index=False)
 df.to_csv('C:\\Users\\sadaco\\Downloads\\N225BP.csv', header=False, index=False)

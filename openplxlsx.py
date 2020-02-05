@@ -1,40 +1,42 @@
 import csv
+import os
 
-import openpyxl
 import pandas as pd
+from openpyxl import load_workbook
 
-wb = openpyxl.load_workbook('C:\\Users\\sadaco\\Downloads\\n225bp.xlsx') #T:\\mydocs\\BCPad\\data\\n225bp.xlsx
+if __name__ == '__main__':
+    #path = os.path.dirname(__file__) #get current file path
+    path = 'C:\\Users\\sadaco\\Downloads'
+    fname = os.path.join(path, 'new225bp.xlsx')
 
-ws = wb['UPRO'] # シート変更
-ws.delete_rows(idx=1, amount=1024) #範囲削除
-#ws['A1'] = 'UPRO'
+    book = load_workbook(filename=fname, data_only=False) #data_only=Trueで数式削除される
+    sheet = book['UPRO'] # シート変更
+    sheet.delete_rows(idx=1, amount=1024) #範囲削除
 
-with open('C:\\Users\\sadaco\\Downloads\\UPRO.csv') as f:
-    reader = csv.reader(f)
-    for row in reader:
-        #print(row)
-        ws.append(row)
+    with open('C:\\Users\\sadaco\\Downloads\\UPRO.csv') as f:
+        reader = csv.reader(f)
+        for row in reader:
+            #print(row)
+            sheet.append(row)
 
-ws = wb['nikkei'] # シート変更
-ws.delete_rows(idx=1, amount=1024) #範囲削除
+    sheet = book['nikkei'] # シート変更
+    sheet.delete_rows(idx=1, amount=1024) #範囲削除
 
-with open('C:\\Users\\sadaco\\Downloads\\t1570.csv', 'r', encoding='utf-8') as f:
-    reader = csv.reader(f)
-    for row in reader:
-        ws.append(row)
+    with open('C:\\Users\\sadaco\\Downloads\\t1570.csv', 'r', encoding='utf-8') as f:
+        reader = csv.reader(f)
+        for row in reader:
+            sheet.append(row)
 
-ws = wb['usd'] # シート変更
-ws.delete_rows(idx=1, amount=1024) #範囲削除
+    sheet = book['usd'] # シート変更
+    sheet.delete_rows(idx=1, amount=1024) #範囲削除
 
-with open('C:\\Users\\sadaco\\Downloads\\dollar-yen-exchange-rate-historical-chart.csv') as f:
-    reader = csv.reader(f)
-    for i,row in enumerate(reader):
-        if i < 12120:
-            continue
-        else:
-            ws.append(row)
+    with open('C:\\Users\\sadaco\\Downloads\\dollar-yen-exchange-rate-historical-chart.csv') as f:
+        reader = csv.reader(f)
+        for i,row in enumerate(reader):
+            if i < 12120:
+                continue
+            else:
+                sheet.append(row)
 
-wb.save('C:\\Users\\sadaco\\Downloads\\n225bp.xlsx')
-
-#df = pd.read_csv('C:\\Users\\sadaco\\Downloads\\UPRO.csv', index_col=0)
-#df.to_excel('T:\\mydocs\\BCPad\\data\\n225bp.xlsx',sheet_name='UPRO',startrow=0,startcol = 0)
+    book.save('C:\\Users\\sadaco\\Downloads\\new225bp.xlsx')
+    book.close() # Only affects read_only and write_only
