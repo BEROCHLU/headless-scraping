@@ -1,3 +1,6 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
 import csv
 import os
 
@@ -5,7 +8,7 @@ import pandas as pd
 from openpyxl import load_workbook
 from pycel import ExcelCompiler
 
-if __name__ == '__main__':
+def openpycel():
     #path = os.path.dirname(__file__) #get current file path
     path = 'C:\\Users\\sadaco\\Downloads'
     fname = os.path.join(path, 'new225bp.xlsx')
@@ -74,3 +77,7 @@ if __name__ == '__main__':
     
     book.save('C:\\Users\\sadaco\\Downloads\\new225bp.xlsx')
     book.close()
+
+
+if __name__ == '__main__':
+    openpycel()

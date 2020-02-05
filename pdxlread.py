@@ -1,20 +1,13 @@
-import sys
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
 import os
+import sys
+
 import openpyxl
 import pandas as pd
 
-if __name__ == '__main__':
-    '''
-    book = openpyxl.load_workbook('C:\\Users\\sadaco\\Downloads\\new225bp.xlsx', read_only=True, data_only=True)
-    check_cell = book['data']['C2'].value
-    print(check_cell) #読めているかテスト
-    book.close() # Only affects read_only and write_only
-    #デーブル範囲解除で読める
-
-    if check_cell == None:
-        print('cell is empty')
-        sys.exit()
-    '''
+def df2csv():
     df = pd.read_excel('C:\\Users\\sadaco\\Downloads\\new225bp.xlsx', sheet_name='data')
     #print(df)
     df = df.dropna(subset=['judge']) #欠損値(NaN)を除外
@@ -27,3 +20,6 @@ if __name__ == '__main__':
 
     df.to_csv(csv_n, header=True, index=False)
     df.to_csv(csv_c, header=False, index=False)
+
+if __name__ == '__main__':
+    df2csv()

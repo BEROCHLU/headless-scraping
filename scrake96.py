@@ -7,6 +7,9 @@ import time
 import pandas as pd
 from selenium import webdriver
 
+import openplxlsx
+import pdxlread
+
 if __name__=='__main__':
 #n225
     url = 'https://96ut.com/stock/jikei.php?code=1570'
@@ -54,3 +57,6 @@ if __name__=='__main__':
         time.sleep(2) #download待ち
         driver.close()
         driver.quit()
+    
+    openplxlsx.openpycel()
+    pdxlread.df2csv()
