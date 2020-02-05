@@ -3,6 +3,7 @@ import os
 
 import pandas as pd
 from openpyxl import load_workbook
+from pycel import ExcelCompiler
 
 if __name__ == '__main__':
     #path = os.path.dirname(__file__) #get current file path
@@ -38,5 +39,38 @@ if __name__ == '__main__':
             else:
                 sheet.append(row)
 
+    MAX_RANGE = len(book['data']['A'])
+    #print(MAX_RANGE)
+
     book.save('C:\\Users\\sadaco\\Downloads\\new225bp.xlsx')
     book.close() # Only affects read_only and write_only
+
+    excel = ExcelCompiler(filename=fname)
+
+    lst_upro = []
+    lst_fxy = []
+    lst_nikke = []
+    lst_judge = []
+
+    for i in range(MAX_RANGE):
+        cell_C = f'C{i + 2}'
+        cell_E = f'E{i + 2}'
+        cell_G = f'G{i + 2}'
+        cell_J = f'J{i + 2}'
+
+        lst_upro.append(excel.evaluate(cell_C))
+        lst_fxy.append(excel.evaluate(cell_E))
+        lst_nikke.append(excel.evaluate(cell_G))
+        lst_judge.append(excel.evaluate(cell_J))
+
+    book = load_workbook(filename=fname)
+    sheet = book['data'] # シート変更
+
+    for i in range(MAX_RANGE):
+        sheet[f'B{i + 2}'] = lst_upro[i]
+        sheet[f'D{i + 2}'] = lst_fxy[i]
+        sheet[f'F{i + 2}'] = lst_nikke[i]
+        sheet[f'I{i + 2}'] = lst_judge[i]
+    
+    book.save('C:\\Users\\sadaco\\Downloads\\new225bp.xlsx')
+    book.close()
