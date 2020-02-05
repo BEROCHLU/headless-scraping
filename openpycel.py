@@ -4,16 +4,16 @@
 import csv
 import os
 
-import pandas as pd
 from openpyxl import load_workbook
 from pycel import ExcelCompiler
 
+
 def openpycel():
     #path = os.path.dirname(__file__) #get current file path
-    path = 'C:\\Users\\sadaco\\Downloads'
-    fname = os.path.join(path, 'new225bp.xlsx')
+    folder_path = 'T:\\mydocs\\BCPad\\data'
+    xlsx_path = os.path.join(folder_path, 'nc225.xlsx')
 
-    book = load_workbook(filename=fname, data_only=False) #data_only=Trueで数式削除される
+    book = load_workbook(filename=xlsx_path, data_only=False) #data_only=Trueで数式削除される
     sheet = book['UPRO'] # シート変更
     sheet.delete_rows(idx=1, amount=1024) #範囲削除
 
@@ -45,10 +45,10 @@ def openpycel():
     MAX_RANGE = len(book['data']['A'])
     #print(MAX_RANGE)
 
-    book.save('C:\\Users\\sadaco\\Downloads\\new225bp.xlsx')
+    book.save(xlsx_path)
     book.close() # Only affects read_only and write_only
 
-    excel = ExcelCompiler(filename=fname)
+    excel = ExcelCompiler(filename=xlsx_path)
 
     lst_upro = []
     lst_fxy = []
@@ -66,7 +66,7 @@ def openpycel():
         lst_nikke.append(excel.evaluate(cell_G))
         lst_judge.append(excel.evaluate(cell_J))
 
-    book = load_workbook(filename=fname)
+    book = load_workbook(filename=xlsx_path)
     sheet = book['data'] # シート変更
 
     for i in range(MAX_RANGE):
@@ -75,9 +75,8 @@ def openpycel():
         sheet[f'F{i + 2}'] = lst_nikke[i]
         sheet[f'I{i + 2}'] = lst_judge[i]
     
-    book.save('C:\\Users\\sadaco\\Downloads\\new225bp.xlsx')
+    book.save(xlsx_path)
     book.close()
-
 
 if __name__ == '__main__':
     openpycel()

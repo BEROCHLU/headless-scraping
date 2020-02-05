@@ -1,14 +1,13 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-import os
 import time
 
 import pandas as pd
 from selenium import webdriver
 
-import openplxlsx
-import pdxlread
+import df2csv
+import openpycel
 
 if __name__=='__main__':
 #n225
@@ -16,10 +15,7 @@ if __name__=='__main__':
     dfs = pd.read_html(url, header=0, index_col=0)
     df = dfs[0]
     df = df.sort_values('日付') #下が最新になるようにソート
-
-    file_path = os.environ['HOMEPATH'] + '\\Downloads\\t1570.csv'
-
-    df.to_csv(file_path)
+    df.to_csv('C:\\Users\\sadaco\\Downloads\\t1570.csv')
 #sp500
     url = 'https://finance.yahoo.com/quote/UPRO/history'
     driver = webdriver.Chrome()
@@ -58,5 +54,5 @@ if __name__=='__main__':
         driver.close()
         driver.quit()
     
-    openplxlsx.openpycel()
-    pdxlread.df2csv()
+    openpycel.openpycel()
+    df2csv.df2csv()
