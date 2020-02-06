@@ -17,7 +17,7 @@ if __name__=='__main__':
         os.remove('C:\\Users\\sadaco\\Downloads\\dollar-yen-exchange-rate-historical-chart.csv')
         os.remove('C:\\Users\\sadaco\\Downloads\\UPRO.csv')
     except Exception as e:
-        pass
+        pass #do nothing
 #t1570
     url = 'https://96ut.com/stock/jikei.php?code=1570'
     dfs = pd.read_html(url, header=0, index_col=0)
@@ -25,7 +25,7 @@ if __name__=='__main__':
     df = df.sort_values('日付') #下が最新になるようにソート
     df.to_csv('C:\\Users\\sadaco\\Downloads\\t1570.csv')
 #fxy
-    options = Options()
+    options = Options() #use chrome option
     prefs = {'download.prompt_for_download': False,
          'download.directory_upgrade': True,
          'safebrowsing.enabled': False,
@@ -47,7 +47,7 @@ if __name__=='__main__':
 
         if elem.is_displayed():
             elem.click()
-            time.sleep(2)
+            time.sleep(2) #ラズパイ向けに待ち
     except Exception as e:
         print(e)
         driver.close() #エラー時、タスクが残らないように終了
@@ -65,7 +65,7 @@ if __name__=='__main__':
 
         if elem.is_displayed():
             elem.click()
-            time.sleep(2)
+            time.sleep(2) #ラズパイ向けに待ち
     except Exception as e:
         print(e)
     finally:
@@ -75,4 +75,3 @@ if __name__=='__main__':
 #excel
     openpycel.openpycel()
     df2csv.df2csv()
-
