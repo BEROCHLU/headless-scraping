@@ -24,6 +24,7 @@ def df2csv():
 
     df.to_csv(path_n, header=True, index=False) #nodejs
     df.to_csv(path_c, header=False, index=False) #C lang
+    print('Done df2csv')
 
 if __name__ == '__main__':
     df2csv()

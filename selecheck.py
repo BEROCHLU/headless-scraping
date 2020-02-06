@@ -6,7 +6,8 @@ if __name__=='__main__':
     prefs = {'download.prompt_for_download': False,
          'download.directory_upgrade': True,
          'safebrowsing.enabled': False,
-         'safebrowsing.disable_download_protection': True}
+         'safebrowsing.disable_download_protection': True,
+         'download.default_directory' : 'C:\\Users\\sadaco\\Downloads'}
     options.add_argument('--headless')
     options.add_experimental_option('prefs', prefs)
 
@@ -18,7 +19,7 @@ if __name__=='__main__':
     driver.switch_to.frame(frame) #iframeにスイッチ
 
     try:
-        driver.implicitly_wait(4) #連続して使う場合はどういう扱いになるのか
+        driver.implicitly_wait(4)
         elem = driver.find_element_by_id('dataDownload')
 
         if elem.is_displayed():

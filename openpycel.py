@@ -77,6 +77,7 @@ def openpycel():
     
     book.save(xlsx_path)
     book.close()
+    print('Done openpycel')
 
 if __name__ == '__main__':
     openpycel()

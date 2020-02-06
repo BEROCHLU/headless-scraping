@@ -5,6 +5,7 @@ import os
 import time
 import pandas as pd
 from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
 
 import df2csv
 import openpycel
@@ -17,15 +18,24 @@ if __name__=='__main__':
         os.remove('C:\\Users\\sadaco\\Downloads\\UPRO.csv')
     except Exception as e:
         pass
-#n225
+#t1570
     url = 'https://96ut.com/stock/jikei.php?code=1570'
     dfs = pd.read_html(url, header=0, index_col=0)
     df = dfs[0]
     df = df.sort_values('日付') #下が最新になるようにソート
     df.to_csv('C:\\Users\\sadaco\\Downloads\\t1570.csv')
-#usd/jpy
+#fxy
+    options = Options()
+    prefs = {'download.prompt_for_download': False,
+         'download.directory_upgrade': True,
+         'safebrowsing.enabled': False,
+         'safebrowsing.disable_download_protection': True,
+         'download.default_directory' : 'C:\\Users\\sadaco\\Downloads'}
+    options.add_argument('--headless') #ヘッダレスではダウンロード指定必須
+    options.add_experimental_option('prefs', prefs)
+
     url = 'https://www.macrotrends.net/2550/dollar-yen-exchange-rate-historical-chart'
-    driver = webdriver.Chrome()
+    driver = webdriver.Chrome(chrome_options=options)
     driver.get(url)
 
     frame = driver.find_element_by_id('chart_iframe')
@@ -37,14 +47,13 @@ if __name__=='__main__':
 
         if elem.is_displayed():
             elem.click()
-            time.sleep(2) #download待ち
+            time.sleep(2)
     except Exception as e:
         print(e)
-        driver.close()
+        driver.close() #エラー時、タスクが残らないように終了
         driver.quit()
-#sp500
+#upro
     url = 'https://finance.yahoo.com/quote/UPRO/history'
-    #driver = webdriver.Chrome()
     driver.get(url)
 
     #driver.set_page_load_timeout(4) #ページがロードされるまでの待ち時間を設定する
@@ -52,16 +61,18 @@ if __name__=='__main__':
     
     try:
         driver.implicitly_wait(4) #次の要素が見つかるまで(秒)待機
-        elem = driver.find_element_by_css_selector('a[download="UPRO.csv"]') #element(s)?
+        elem = driver.find_element_by_css_selector('a[download="UPRO.csv"]')
 
         if elem.is_displayed():
             elem.click()
-            time.sleep(2) #download待ち
+            time.sleep(2)
     except Exception as e:
         print(e)
     finally:
         driver.close()
         driver.quit()
+        print('Done scrake96')
 #excel
     openpycel.openpycel()
     df2csv.df2csv()
+
