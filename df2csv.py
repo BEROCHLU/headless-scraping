@@ -2,10 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import os
-
-import openpyxl
 import pandas as pd
-
 
 def df2csv():
     folder_path = 'T:\\mydocs\\BCPad\\data'
@@ -13,8 +10,8 @@ def df2csv():
 
     df = pd.read_excel(xlsx_path, sheet_name='data')
     #print(df)
-    df = df.dropna(subset=['judge']) #欠損値(NaN)を除外
-    df = df.loc[:,['date','upro', 'fxy', 't1570']]
+    df = df.dropna(subset=['judge']) #judge列の欠損値(NaN)を除外
+    df = df.loc[:,['date','upro', 'fxy', 't1570']] #指定列だけ
 
     folder_n = 'T:\\ProgramFilesT\\pleiades\\workspace\\node225'
     folder_c = 'T:\\ProgramFilesT\\pleiades\\workspace\\nikkei\\Debug'

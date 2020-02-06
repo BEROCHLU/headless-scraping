@@ -7,7 +7,6 @@ import os
 from openpyxl import load_workbook
 from pycel import ExcelCompiler
 
-
 def openpycel():
     #path = os.path.dirname(__file__) #get current file path
     folder_path = 'T:\\mydocs\\BCPad\\data'
@@ -48,7 +47,7 @@ def openpycel():
     book.save(xlsx_path)
     book.close() # Only affects read_only and write_only
 
-    excel = ExcelCompiler(filename=xlsx_path)
+    excel = ExcelCompiler(filename=xlsx_path) #raspberryでエクセルを再計算するための最終兵器
 
     lst_upro = []
     lst_fxy = []
