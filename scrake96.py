@@ -13,12 +13,13 @@ import openpycel
 
 if __name__=='__main__':
 #remove download files
-    try:
-        os.remove('C:\\Users\\sadaco\\Downloads\\t1570.csv')
-        os.remove('C:\\Users\\sadaco\\Downloads\\dollar-yen-exchange-rate-historical-chart.csv')
-        os.remove('C:\\Users\\sadaco\\Downloads\\UPRO.csv')
-    except Exception as e:
-        pass #do nothing
+    lstFile = ['t1570.csv', 'dollar-yen-exchange-rate-historical-chart.csv', 'UPRO.csv']
+    for csv_file in lstFile:
+        csv_path = os.path.join('C:\\Users\\sadaco\\Downloads', csv_file)
+
+        if os.path.isfile(csv_path):
+            os.remove(csv_path)
+            print(f'{csv_file} removed')
 #t1570
     url = 'https://96ut.com/stock/jikei.php?code=1570'
     dfs = pd.read_html(url, header=0, index_col=0)
