@@ -48,11 +48,13 @@ def openpycel():
     book.close() # Only affects read_only and write_only
 
     excel = ExcelCompiler(filename=xlsx_path) #raspberryでエクセルを再計算するための最終兵器
+    book = load_workbook(filename=xlsx_path)
+    sheet = book['data'] # シート変更
 
-    lst_upro = []
-    lst_fxy = []
-    lst_nikke = []
-    lst_judge = []
+    #lst_upro = []
+    #lst_fxy = []
+    #lst_nikke = []
+    #lst_judge = []
 
     for i in range(MAX_RANGE):
         cell_C = f'C{i + 2}'
@@ -60,19 +62,15 @@ def openpycel():
         cell_G = f'G{i + 2}'
         cell_J = f'J{i + 2}'
 
-        lst_upro.append(excel.evaluate(cell_C))
-        lst_fxy.append(excel.evaluate(cell_E))
-        lst_nikke.append(excel.evaluate(cell_G))
-        lst_judge.append(excel.evaluate(cell_J))
+        #lst_upro.append(excel.evaluate(cell_C))
+        #lst_fxy.append(excel.evaluate(cell_E))
+        #lst_nikke.append(excel.evaluate(cell_G))
+        #lst_judge.append(excel.evaluate(cell_J))
 
-    book = load_workbook(filename=xlsx_path)
-    sheet = book['data'] # シート変更
-
-    for i in range(MAX_RANGE):
-        sheet[f'B{i + 2}'] = lst_upro[i]
-        sheet[f'D{i + 2}'] = lst_fxy[i]
-        sheet[f'F{i + 2}'] = lst_nikke[i]
-        sheet[f'I{i + 2}'] = lst_judge[i]
+        sheet[f'B{i + 2}'] = excel.evaluate(cell_C)
+        sheet[f'D{i + 2}'] = excel.evaluate(cell_E)
+        sheet[f'F{i + 2}'] = excel.evaluate(cell_G)
+        sheet[f'I{i + 2}'] = excel.evaluate(cell_J)
     
     book.save(xlsx_path)
     book.close()

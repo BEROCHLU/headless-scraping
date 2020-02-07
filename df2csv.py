@@ -9,10 +9,10 @@ def df2csv():
     xlsx_path = os.path.join(folder_path, 'nc225.xlsx')
 
     df = pd.read_excel(xlsx_path, sheet_name='data')
-    #print(df)
+    
     df = df.dropna(subset=['judge']) #judge列の欠損値(NaN)を除外
     df = df.loc[:,['date','upro', 'fxy', 't1570']] #指定列だけ
-
+    #print(df)
     folder_n = 'T:\\ProgramFilesT\\pleiades\\workspace\\node225'
     folder_c = 'T:\\ProgramFilesT\\pleiades\\workspace\\nikkei\\Debug'
     
