@@ -19,7 +19,7 @@ if __name__=='__main__':
 
         if os.path.isfile(csv_path):
             os.remove(csv_path)
-            print(f'{csv_file} removed')
+            print(f'removed {csv_file}')
 #t1570
     url = 'https://96ut.com/stock/jikei.php?code=1570'
     dfs = pd.read_html(url, header=0, index_col=0)
@@ -44,7 +44,7 @@ if __name__=='__main__':
     driver.switch_to.frame(frame) #iframeにスイッチ
 
     try:
-        driver.implicitly_wait(4) #連続して使う場合はどういう扱いになるのか
+        driver.implicitly_wait(8) #連続して使う場合はどういう扱いになるのか
         elem = driver.find_element_by_id('dataDownload')
 
         if elem.is_displayed():
@@ -62,7 +62,7 @@ if __name__=='__main__':
     #driver.set_script_timeout(1) #timeoutを超えるとエラー発生
     
     try:
-        driver.implicitly_wait(4) #次の要素が見つかるまで(秒)待機
+        driver.implicitly_wait(32) #次の要素が見つかるまで(秒)待機
         elem = driver.find_element_by_css_selector('a[download="UPRO.csv"]')
 
         if elem.is_displayed():

@@ -43,7 +43,7 @@ def openpycel():
 
     MAX_RANGE = len(book['data']['A'])
 
-    book.save(xlsx_path)
+    book.save(xlsx_path) #over write save
     book.close() # Only affects read_only and write_only
 
     excel = ExcelCompiler(filename=xlsx_path) #raspberryでエクセルを再計算するための最終兵器
@@ -51,15 +51,15 @@ def openpycel():
     sheet = book['data'] # シート変更
 
     for i in range(MAX_RANGE):
-        cell_C = f'C{i + 2}'
-        cell_E = f'E{i + 2}'
-        cell_G = f'G{i + 2}'
-        cell_J = f'J{i + 2}'
+        cell_C = f'C{i + 2}' #upro
+        cell_E = f'E{i + 2}' #fxy
+        cell_G = f'G{i + 2}' #t1570
+        #cell_J = f'J{i + 2}'
 
         sheet[f'B{i + 2}'] = excel.evaluate(cell_C)
         sheet[f'D{i + 2}'] = excel.evaluate(cell_E)
         sheet[f'F{i + 2}'] = excel.evaluate(cell_G)
-        sheet[f'I{i + 2}'] = excel.evaluate(cell_J)
+        #sheet[f'I{i + 2}'] = excel.evaluate(cell_J)
     
     book.save(xlsx_path)
     book.close()
