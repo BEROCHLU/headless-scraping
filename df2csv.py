@@ -12,7 +12,7 @@ def df2csv():
     
     df = df.dropna(subset=['upro', 'fxy', 't1570']) #欠損値(NaN)を除外
     df = df.loc[:,['date','upro', 'fxy', 't1570']] #指定列だけ
-    print(df)
+    #print(df)
     folder_n = 'T:\\ProgramFilesT\\pleiades\\workspace\\node225'
     folder_c = 'T:\\ProgramFilesT\\pleiades\\workspace\\nikkei\\Debug'
     
