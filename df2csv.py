@@ -20,7 +20,7 @@ def df2csv():
     path_c = os.path.join(folder_c, 'N225BP.csv')
 
     df.to_csv(path_n, header=True, index=False) #nodejs
-    df.to_csv(path_c, header=False, index=False) #C lang
+    df.to_csv(path_c, header=False, index=False, line_terminator='\n') #C lang
     print('Done df2csv')
 
 if __name__ == '__main__':
