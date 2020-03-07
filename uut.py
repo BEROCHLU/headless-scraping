@@ -10,16 +10,9 @@ from selenium.webdriver.chrome.options import Options
 
 import df2csv
 import openpycel
+import delete3files
 
 if __name__=='__main__':
-#remove download files
-    lstFile = ['t1570.csv', 'dollar-yen-exchange-rate-historical-chart.csv', 'UPRO.csv']
-    for csv_file in lstFile:
-        csv_path = os.path.join('C:\\Users\\sadaco\\Downloads', csv_file)
-
-        if os.path.isfile(csv_path):
-            os.remove(csv_path)
-            print(f'removed {csv_file}')
 #t1570
     url = 'https://96ut.com/stock/jikei.php?code=1570'
     dfs = pd.read_html(url, header=0, index_col=0)
@@ -77,3 +70,4 @@ if __name__=='__main__':
 #excel
     openpycel.openpycel()
     df2csv.df2csv()
+    delete3files.delete3files()
