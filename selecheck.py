@@ -12,7 +12,7 @@ if __name__=='__main__':
     options.add_experimental_option('prefs', prefs)
 
     url = 'https://www.macrotrends.net/2550/dollar-yen-exchange-rate-historical-chart'
-    driver = webdriver.Chrome(chrome_options=options)
+    driver = webdriver.Chrome(executable_path="T:\\ProgramFilesT\\chromedriver_win32\\chromedriver.exe", chrome_options=options)
     driver.get(url)
 
     frame = driver.find_element_by_id('chart_iframe')
