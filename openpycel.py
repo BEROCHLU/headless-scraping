@@ -16,7 +16,7 @@ def openpycel():
     sheet = book['UPRO'] # シート変更
     sheet.delete_rows(idx=1, amount=1024) #範囲削除
 
-    with open('C:\\Users\\sadaco\\Downloads\\UPRO.csv') as f:
+    with open('C:\\Users\\sadaco\\Downloads\\SPY.csv') as f:
         reader = csv.reader(f)
         for row in reader:
             #print(row)

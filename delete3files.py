@@ -5,7 +5,7 @@ import os
 
 def delete3files():
     #remove download files
-    lstFile = ['t1570.csv', 'dollar-yen-exchange-rate-historical-chart.csv', 'UPRO.csv']
+    lstFile = ['t1570.csv', 'dollar-yen-exchange-rate-historical-chart.csv', 'SPY.csv']
     for csv_file in lstFile:
         csv_path = os.path.join('C:\\Users\\sadaco\\Downloads', csv_file)
 
