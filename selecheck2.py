@@ -11,19 +11,14 @@ if __name__=='__main__':
     options.add_argument('--headless')
     options.add_experimental_option('prefs', prefs)
 
-    url = 'https://www.macrotrends.net/2550/dollar-yen-exchange-rate-historical-chart'
+    url = 'https://stocks.finance.yahoo.co.jp/stocks/detail/?code=1321.T'
     driver = webdriver.Chrome(executable_path="T:\\ProgramFilesT\\chromedriver_win32\\chromedriver.exe", chrome_options=options)
     driver.get(url)
 
-    frame = driver.find_element_by_id('chart_iframe')
-    driver.switch_to.frame(frame) #iframeにスイッチ
-
     try:
-        driver.implicitly_wait(4)
-        elem = driver.find_element_by_id('dataDownload')
-
-        if elem.is_displayed():
-            elem.click()
+        str_open = driver.find_element_by_css_selector('dd.ymuiEditLink.mar0 > strong').text
+        str_open = str_open.replace(",", "")
+        print(str_open)
     except Exception as e:
         print(e)
         driver.close()

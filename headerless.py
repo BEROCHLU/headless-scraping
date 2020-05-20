@@ -13,13 +13,13 @@ import openpycel
 import delete3files
 
 if __name__=='__main__':
-#t1570
+#t1321
     url = 'https://96ut.com/stock/jikei.php?code=1321'
     dfs = pd.read_html(url, header=0, index_col=0)
     df = dfs[0]
     df = df.sort_values('日付') #下が最新になるようにソート
     df.to_csv('C:\\Users\\sadaco\\Downloads\\t1570.csv')
-#fxy
+#selenium
     options = Options() #use chrome option
     prefs = {'download.prompt_for_download': False,
          'download.directory_upgrade': True,
@@ -28,7 +28,7 @@ if __name__=='__main__':
          'download.default_directory' : 'C:\\Users\\sadaco\\Downloads'}
     options.add_argument('--headless') #ヘッダレスではダウンロード指定必須
     options.add_experimental_option('prefs', prefs)
-
+#fxy
     url = 'https://www.macrotrends.net/2550/dollar-yen-exchange-rate-historical-chart'
     driver = webdriver.Chrome(executable_path="T:\\ProgramFilesT\\chromedriver_win32\\chromedriver.exe", chrome_options=options)
     driver.get(url)
@@ -47,7 +47,22 @@ if __name__=='__main__':
         print(e)
         driver.close() #エラー時、タスクが残らないように終了
         driver.quit()
-#upro
+#t1321 append
+    url = 'https://finance.yahoo.com/quote/SPY/history'
+    driver.get(url)
+    try:
+        driver.implicitly_wait(8) #次の要素が見つかるまで(秒)待機
+        elem = driver.find_element_by_id('dataDownload')
+
+        if elem.is_displayed():
+            elem.click()
+            time.sleep(2) #ラズパイ向けに待ち
+    except Exception as e:
+        print(e)
+        driver.close() #エラー時、タスクが残らないように終了
+        driver.quit()
+
+#spy
     url = 'https://finance.yahoo.com/quote/SPY/history'
     driver.get(url)
 
@@ -70,4 +85,4 @@ if __name__=='__main__':
 #excel
     openpycel.openpycel()
     df2csv.df2csv()
-    delete3files.delete3files()
+    #delete3files.delete3files()
