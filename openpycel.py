@@ -46,7 +46,7 @@ def openpycel():
     book.save(xlsx_path) #over write save
     book.close() # Only affects read_only and write_only
 
-    excel = ExcelCompiler(filename=xlsx_path) #raspberryでエクセルを再計算するための最終兵器
+    excel = ExcelCompiler(filename=xlsx_path) #raspberry piでエクセルを開かずに再計算するための最終兵器
     book = load_workbook(filename=xlsx_path)
     sheet = book['data'] # シート変更
 

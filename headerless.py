@@ -3,6 +3,7 @@
 
 import os
 import time
+import datetime
 import pandas as pd
 
 from selenium import webdriver
@@ -13,13 +14,13 @@ import openpycel
 import delete3files
 
 if __name__=='__main__':
-#t1321
+#pandas
     url = 'https://96ut.com/stock/jikei.php?code=1321'
     dfs = pd.read_html(url, header=0, index_col=0)
     df = dfs[0]
     df = df.sort_values('日付') #下が最新になるようにソート
-    df.to_csv('C:\\Users\\sadaco\\Downloads\\t1570.csv')
-#selenium
+    df.to_csv('C:\\Users\\sadaco\\Downloads\\t1570.csv') # 整形するため一度出す
+#selenium begin
     options = Options() #use chrome option
     prefs = {'download.prompt_for_download': False,
          'download.directory_upgrade': True,
@@ -31,15 +32,14 @@ if __name__=='__main__':
 #fxy
     url = 'https://www.macrotrends.net/2550/dollar-yen-exchange-rate-historical-chart'
     driver = webdriver.Chrome(executable_path="T:\\ProgramFilesT\\chromedriver_win32\\chromedriver.exe", chrome_options=options)
+    driver.implicitly_wait(16) #要素が見つかるまで(秒)待機 driverがcloseされない限り有効
     driver.get(url)
 
     frame = driver.find_element_by_id('chart_iframe')
     driver.switch_to.frame(frame) #iframeにスイッチ
 
     try:
-        driver.implicitly_wait(8) #連続して使う場合はどういう扱いになるのか
         elem = driver.find_element_by_id('dataDownload')
-
         if elem.is_displayed():
             elem.click()
             time.sleep(2) #ラズパイ向けに待ち
@@ -47,21 +47,26 @@ if __name__=='__main__':
         print(e)
         driver.close() #エラー時、タスクが残らないように終了
         driver.quit()
-#t1321 append
-    url = 'https://finance.yahoo.com/quote/SPY/history'
-    driver.get(url)
-    try:
-        driver.implicitly_wait(8) #次の要素が見つかるまで(秒)待機
-        elem = driver.find_element_by_id('dataDownload')
+#1321.t append
+    dt_now = datetime.datetime.now()  # 今日の日付取得
+    dt_now = dt_now.strftime("%Y/%m/%d")
 
-        if elem.is_displayed():
-            elem.click()
-            time.sleep(2) #ラズパイ向けに待ち
-    except Exception as e:
-        print(e)
-        driver.close() #エラー時、タスクが残らないように終了
-        driver.quit()
+    dfq = df.query(f'日付 == "{dt_now}"')
 
+    if dfq.empty:#今日の日付が含まれていない場合
+        url = 'https://stocks.finance.yahoo.co.jp/stocks/detail/?code=1321.T'
+        driver.get(url)
+        try:
+            str_open = driver.find_element_by_css_selector('dd.ymuiEditLink.mar0 > strong').text
+            str_open = str_open.replace(",", "") #remove comma
+
+            df = pd.read_csv('C:\\Users\\sadaco\\Downloads\\t1570.csv') #出したものを読み込む
+            df = df.append({'日付': dt_now, '初値': str_open}, ignore_index=True)
+            df.to_csv('C:\\Users\\sadaco\\Downloads\\t1570.csv', header=True, index=False) # 最後に出力
+        except Exception as e: #セレクターが見つからなかった場合
+            print(e)
+            driver.close() #エラー時、タスクが残らないように終了
+            driver.quit()
 #spy
     url = 'https://finance.yahoo.com/quote/SPY/history'
     driver.get(url)
@@ -70,7 +75,6 @@ if __name__=='__main__':
     #driver.set_script_timeout(1) #timeoutを超えるとエラー発生
     
     try:
-        driver.implicitly_wait(32) #次の要素が見つかるまで(秒)待機
         elem = driver.find_element_by_css_selector('a[download="SPY.csv"]')
 
         if elem.is_displayed():
@@ -85,4 +89,4 @@ if __name__=='__main__':
 #excel
     openpycel.openpycel()
     df2csv.df2csv()
-    #delete3files.delete3files()
+    delete3files.delete3files()
