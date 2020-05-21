@@ -8,23 +8,19 @@ import pandas as pd
 
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
-# win10 only
-#import df2csv
-#import openpycel
-#import delete3files
+
 
 if __name__ == "__main__":
     # path
     download_folder = "C:\\Users\\sadaco\\Downloads"
     download_path = os.path.join(download_folder, "t1570.csv")
-    # win10 only
     chromedriver_path = "T:\\ProgramFilesT\\chromedriver_win32\\chromedriver.exe"
     # pandas
     url = "https://96ut.com/stock/jikei.php?code=1321"
     dfs = pd.read_html(url, header=0, index_col=0)
     df = dfs[0]
     df = df.sort_values("日付")  # 下が最新になるようにソート
-    df.to_csv("C:\\Users\\sadaco\\Downloads\\t1570.csv")  # 日付がヘッダーになってないので整形するため一度出力する
+    df.to_csv(download_path)  # 日付がヘッダーになってないので整形するため一度出力する
     # selenium begin
     options = Options()  # use chrome option
     prefs = {
@@ -35,13 +31,12 @@ if __name__ == "__main__":
         "download.default_directory": download_folder,
     }
     options.add_argument("--headless")  # ヘッダレスではダウンロード指定必須
-    options.add_argument("--window-size=1280, 1024") # fix element is not clickable at point
+    # fix element is not clickable at point
+    options.add_argument("--window-size=1280, 1024")
     options.add_experimental_option("prefs", prefs)
     # fxy
     url = "https://www.macrotrends.net/2550/dollar-yen-exchange-rate-historical-chart"
-    driver = webdriver.Chrome(
-        executable_path=chromedriver_path, chrome_options=options
-    )
+    driver = webdriver.Chrome(executable_path=chromedriver_path, chrome_options=options)
     driver.implicitly_wait(16)  # 要素が見つかるまで(秒)待機 driverがcloseされない限り有効
     driver.get(url)
 
@@ -82,9 +77,6 @@ if __name__ == "__main__":
     url = "https://finance.yahoo.com/quote/SPY/history"
     driver.get(url)
 
-    # driver.set_page_load_timeout(4) #ページがロードされるまでの待ち時間を設定する
-    # driver.set_script_timeout(1) #timeoutを超えるとエラー発生
-
     try:
         elem = driver.find_element_by_css_selector('a[download="SPY.csv"]')
 
@@ -97,7 +89,3 @@ if __name__ == "__main__":
         driver.close()
         driver.quit()
         print("Done scrake96")
-    # excel operations win10 only
-    #openpycel.openpycel()
-    #df2csv.df2csv()
-    #delete3files.delete3files()
