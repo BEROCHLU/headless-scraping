@@ -35,11 +35,12 @@ if __name__ == "__main__":
         "download.default_directory": download_folder,
     }
     options.add_argument("--headless")  # ヘッダレスではダウンロード指定必須
+    options.add_argument("--window-size=1280, 1024") # fix element is not clickable at point
     options.add_experimental_option("prefs", prefs)
     # fxy
     url = "https://www.macrotrends.net/2550/dollar-yen-exchange-rate-historical-chart"
     driver = webdriver.Chrome(
-        executable_path=chromedriver_path, chrome_options=options,
+        executable_path=chromedriver_path, chrome_options=options
     )
     driver.implicitly_wait(16)  # 要素が見つかるまで(秒)待機 driverがcloseされない限り有効
     driver.get(url)
@@ -97,6 +98,6 @@ if __name__ == "__main__":
         driver.quit()
         print("Done scrake96")
     # excel operations win10 only
-    openpycel.openpycel()
-    df2csv.df2csv()
-    delete3files.delete3files()
+    #openpycel.openpycel()
+    #df2csv.df2csv()
+    #delete3files.delete3files()
