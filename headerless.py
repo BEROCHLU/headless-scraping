@@ -9,9 +9,9 @@ import pandas as pd
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 # win10 only
-import df2csv
-import openpycel
-import delete3files
+#import df2csv
+#import openpycel
+#import delete3files
 
 if __name__ == "__main__":
     # path
