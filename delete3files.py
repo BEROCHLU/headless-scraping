@@ -3,16 +3,19 @@
 
 import os
 
+# remove download files
 def delete3files():
-    #remove download files
-    lstFile = ['t1570.csv', 'dollar-yen-exchange-rate-historical-chart.csv', 'SPY.csv']
+    download_folder = "C:\\Users\\sadaco\\Downloads"
+
+    lstFile = ["t1570.csv", "dollar-yen-exchange-rate-historical-chart.csv", "SPY.csv"]
     for csv_file in lstFile:
-        csv_path = os.path.join('C:\\Users\\sadaco\\Downloads', csv_file)
+        csv_path = os.path.join(download_folder, csv_file)
 
         if os.path.isfile(csv_path):
             os.remove(csv_path)
-            print(f'removed {csv_file}')
-    print('Done delete3files')
+            print(f"removed {csv_file}")
+    print("Done delete3files")
 
-if __name__=='__main__':
+
+if __name__ == "__main__":
     delete3files()

@@ -8,18 +8,23 @@ import pandas as pd
 
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
-
+# win10 only
 import df2csv
 import openpycel
 import delete3files
 
 if __name__ == "__main__":
+    # path
+    download_folder = "C:\\Users\\sadaco\\Downloads"
+    download_path = os.path.join(download_folder, "t1570.csv")
+    # win10 only
+    chromedriver_path = "T:\\ProgramFilesT\\chromedriver_win32\\chromedriver.exe"
     # pandas
     url = "https://96ut.com/stock/jikei.php?code=1321"
     dfs = pd.read_html(url, header=0, index_col=0)
     df = dfs[0]
     df = df.sort_values("日付")  # 下が最新になるようにソート
-    df.to_csv("C:\\Users\\sadaco\\Downloads\\t1570.csv")  # 整形するため一度出す
+    df.to_csv("C:\\Users\\sadaco\\Downloads\\t1570.csv")  # 日付がヘッダーになってないので整形するため一度出力する
     # selenium begin
     options = Options()  # use chrome option
     prefs = {
@@ -27,15 +32,14 @@ if __name__ == "__main__":
         "download.directory_upgrade": True,
         "safebrowsing.enabled": False,
         "safebrowsing.disable_download_protection": True,
-        "download.default_directory": "C:\\Users\\sadaco\\Downloads",
+        "download.default_directory": download_folder,
     }
     options.add_argument("--headless")  # ヘッダレスではダウンロード指定必須
     options.add_experimental_option("prefs", prefs)
     # fxy
     url = "https://www.macrotrends.net/2550/dollar-yen-exchange-rate-historical-chart"
     driver = webdriver.Chrome(
-        executable_path="T:\\ProgramFilesT\\chromedriver_win32\\chromedriver.exe",
-        chrome_options=options,
+        executable_path=chromedriver_path, chrome_options=options,
     )
     driver.implicitly_wait(16)  # 要素が見つかるまで(秒)待機 driverがcloseされない限り有効
     driver.get(url)
@@ -66,11 +70,9 @@ if __name__ == "__main__":
             str_open = driver.find_element_by_css_selector(str_selector).text
             str_open = str_open.replace(",", "")  # remove comma
 
-            df = pd.read_csv("C:\\Users\\sadaco\\Downloads\\t1570.csv")  # 出したものを読み込む
+            df = pd.read_csv(download_path)  # 出したものを読み込む
             df = df.append({"日付": dt_now, "初値": str_open}, ignore_index=True)
-            df.to_csv(
-                "C:\\Users\\sadaco\\Downloads\\t1570.csv", header=True, index=False
-            )  # 最後に出力
+            df.to_csv(download_path, header=True, index=False)  # 最後に出力
         except Exception as e:  # セレクターが見つからなかった場合
             print(e)
             driver.close()  # エラー時、タスクが残らないように終了
@@ -94,7 +96,7 @@ if __name__ == "__main__":
         driver.close()
         driver.quit()
         print("Done scrake96")
-    # excel
+    # excel operations win10 only
     openpycel.openpycel()
     df2csv.df2csv()
     delete3files.delete3files()
