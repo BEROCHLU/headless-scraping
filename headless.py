@@ -74,11 +74,12 @@ if __name__ == "__main__":
             driver.close()  # エラー時、タスクが残らないように終了
             driver.quit()
     # spy
-    url = "https://finance.yahoo.com/quote/SPY/history"
+    ticker = "^DJI"
+    url = f"https://finance.yahoo.com/quote/{ticker}/history"
     driver.get(url)
 
     try:
-        elem = driver.find_element_by_css_selector('a[download="SPY.csv"]')
+        elem = driver.find_element_by_css_selector(f'a[download="{ticker}.csv"]')
 
         if elem.is_displayed():
             elem.click()

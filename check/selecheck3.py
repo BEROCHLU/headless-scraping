@@ -19,7 +19,8 @@ if __name__ == "__main__":
     options.add_argument("--window-size=1280, 1024") # fix element is not clickable at point
     options.add_experimental_option("prefs", prefs)
 
-    url = "https://finance.yahoo.com/quote/SPY/history"
+    ticker = "^DJI"
+    url = f"https://finance.yahoo.com/quote/{ticker}/history"
     driver = webdriver.Chrome(
         executable_path="T:\\ProgramFilesT\\chromedriver_win32\\chromedriver.exe",
         chrome_options=options,
@@ -28,7 +29,7 @@ if __name__ == "__main__":
     driver.get(url)
 
     try:
-        elem = driver.find_element_by_css_selector('a[download="SPY.csv"]')
+        elem = driver.find_element_by_css_selector(f'a[download="{ticker}.csv"]')
         if elem.is_displayed():
             elem.click()
             time.sleep(2)  # ラズパイ向けにダウンロード待ち
