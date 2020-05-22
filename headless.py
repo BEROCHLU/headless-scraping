@@ -88,4 +88,4 @@ if __name__ == "__main__":
     finally:
         driver.close()
         driver.quit()
-        print("Done scrake96")
+        print("Done chrome-headless")
