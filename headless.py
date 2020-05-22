@@ -34,7 +34,7 @@ if __name__ == "__main__":
     # fix element is not clickable at point
     options.add_argument("--window-size=1280, 1024")
     options.add_experimental_option("prefs", prefs)
-    # fxy
+    # USD
     url = "https://www.macrotrends.net/2550/dollar-yen-exchange-rate-historical-chart"
     driver = webdriver.Chrome(executable_path=chromedriver_path, chrome_options=options)
     driver.implicitly_wait(16)  # 要素が見つかるまで(秒)待機 driverがcloseされない限り有効
@@ -47,12 +47,12 @@ if __name__ == "__main__":
         elem = driver.find_element_by_id("dataDownload")
         if elem.is_displayed():
             elem.click()
-            time.sleep(2)  # ラズパイ向けに待ち
+            time.sleep(2)  # ラズパイ向けにダウンロード待ち
     except Exception as e:
         print(e)
         driver.close()  # エラー時、タスクが残らないように終了
         driver.quit()
-    # 1321.t append
+    # NK225
     dt_now = datetime.datetime.now()  # 今日の日付取得
     dt_now = dt_now.strftime("%Y/%m/%d")
 
@@ -73,7 +73,7 @@ if __name__ == "__main__":
             print(e)
             driver.close()  # エラー時、タスクが残らないように終了
             driver.quit()
-    # spy
+    # DOW
     ticker = "^DJI"
     url = f"https://finance.yahoo.com/quote/{ticker}/history"
     driver.get(url)
@@ -83,7 +83,7 @@ if __name__ == "__main__":
 
         if elem.is_displayed():
             elem.click()
-            time.sleep(2)  # ラズパイ向けに待ち
+            time.sleep(2)  # ラズパイ向けにダウンロード待ち
     except Exception as e:
         print(e)
     finally:
