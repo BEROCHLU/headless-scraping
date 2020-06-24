@@ -11,7 +11,7 @@ def df2csv():
     df = df.dropna(subset=["upro", "fxy", "t1570"])  # 欠損値(NaN)を除外
     df = df.loc[:, ["date", "upro", "fxy", "t1570"]]  # 指定列だけ
 
-    path_c = "T:\\ProgramFilesT\\pleiades\\workspace\\nikkei\\Debug\\N225BP.csv"
+    path_c = "C:\\Users\\sadaco\\Documents\\GitHub\\sakata\\csv\\n225in.csv"
     path_p = "C:\\Users\\sadaco\\Documents\\GitHub\\sakata\\json\\n225in.json"
 
     df.to_csv(path_c, header=False, index=False, line_terminator="\n")  # C lang
