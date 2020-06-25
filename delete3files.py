@@ -12,7 +12,7 @@ def delete3files():
         "dollar-yen-exchange-rate-historical-chart.csv",
         "^FTSE.csv",
         "^DJI.csv",
-        "pound-japanese-yen-exchange-rate-historical-chart",
+        "pound-japanese-yen-exchange-rate-historical-chart.csv",
     ]
     for csv_file in lstFile:
         csv_path = os.path.join(download_folder, csv_file)
@@ -20,7 +20,7 @@ def delete3files():
         if os.path.isfile(csv_path):
             os.remove(csv_path)
             print(f"removed {csv_file}")
-    print("Done delete3files")
+    print("Done delete files")
 
 
 if __name__ == "__main__":

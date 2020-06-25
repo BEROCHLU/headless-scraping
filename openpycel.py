@@ -11,7 +11,7 @@ from pycel import ExcelCompiler
 def openpycel():
     # path = os.path.dirname(__file__) #get current file path
     download_folder = "C:\\Users\\sadaco\\Downloads"
-    spy_path = os.path.join(download_folder, "^DJI.csv")
+    spy_path = os.path.join(download_folder, "^DJI.csv") #^DJI | ^FTSE
     nk_path = os.path.join(download_folder, "t1570.csv")
     # dollar-yen-exchange-rate-historical-chart.csv | pound-japanese-yen-exchange-rate-historical-chart.csv
     fxy_path = os.path.join(

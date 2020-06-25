@@ -5,6 +5,7 @@ import os
 import time
 import datetime
 import pandas as pd
+import yfinance as yf
 
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
@@ -71,9 +72,22 @@ if __name__ == "__main__":
             df.to_csv(download_path, header=True, index=False)  # 最後に出力
         except Exception as e:  # セレクターが見つからなかった場合
             print(e)
-            driver.close()  # エラー時、タスクが残らないように終了
-            driver.quit()
-    # DOW
+
+    driver.close()
+    driver.quit()
+
+    qq = '^DJI' # CVX | ^FTSE | ^DJI
+    yft = yf.Ticker(qq)
+
+    dfHist = yft.history(period="1y")
+    dfHist = dfHist.drop(columns=['Dividends', 'Stock Splits'])
+    dfHist = dfHist.dropna(subset=['Open', 'High', 'Low', 'Close']) #OHLCに欠損値''が1つでもあれば行削除
+
+    download_path = os.path.join(download_folder, f"{qq}.csv")
+    dfHist.to_csv(download_path)
+
+    print("Done chrome-headless")
+    '''
     ticker = "^DJI" # ^DJI | ^RUT
     url = f"https://finance.yahoo.com/quote/{ticker}/history"
     driver.get(url)
@@ -90,3 +104,4 @@ if __name__ == "__main__":
         driver.close()
         driver.quit()
         print("Done chrome-headless")
+    '''
