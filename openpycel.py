@@ -13,8 +13,9 @@ def openpycel():
     download_folder = "C:\\Users\\sadaco\\Downloads"
     spy_path = os.path.join(download_folder, "^DJI.csv")
     nk_path = os.path.join(download_folder, "t1570.csv")
+    # dollar-yen-exchange-rate-historical-chart.csv | pound-japanese-yen-exchange-rate-historical-chart.csv
     fxy_path = os.path.join(
-        download_folder, "dollar-yen-exchange-rate-historical-chart.csv"
+        download_folder, "pound-japanese-yen-exchange-rate-historical-chart.csv"
     )
     xlsx_path = "T:\\mydocs\\BCPad\\data\\nc225.xlsx"
 
@@ -42,7 +43,7 @@ def openpycel():
     with open(fxy_path) as f:
         reader = csv.reader(f)
         for i, row in enumerate(reader):
-            if i < 12120:
+            if i < 7200: #12120
                 continue
             else:
                 sheet.append(row)

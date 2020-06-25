@@ -34,8 +34,8 @@ if __name__ == "__main__":
     # fix element is not clickable at point
     options.add_argument("--window-size=1280, 1024")
     options.add_experimental_option("prefs", prefs)
-    # USD
-    url = "https://www.macrotrends.net/2550/dollar-yen-exchange-rate-historical-chart"
+    # https://www.macrotrends.net/2556/pound-japanese-yen-exchange-rate-historical-chart | https://www.macrotrends.net/2550/dollar-yen-exchange-rate-historical-chart
+    url = "https://www.macrotrends.net/2556/pound-japanese-yen-exchange-rate-historical-chart" #
     driver = webdriver.Chrome(executable_path=chromedriver_path, chrome_options=options)
     driver.implicitly_wait(16)  # 要素が見つかるまで(秒)待機 driverがcloseされない限り有効
     driver.get(url)
@@ -74,7 +74,7 @@ if __name__ == "__main__":
             driver.close()  # エラー時、タスクが残らないように終了
             driver.quit()
     # DOW
-    ticker = "^DJI"
+    ticker = "^DJI" # ^DJI | ^RUT
     url = f"https://finance.yahoo.com/quote/{ticker}/history"
     driver.get(url)
 
