@@ -87,21 +87,3 @@ if __name__ == "__main__":
     dfHist.to_csv(download_path)
 
     print("Done chrome-headless")
-    '''
-    ticker = "^DJI" # ^DJI | ^RUT
-    url = f"https://finance.yahoo.com/quote/{ticker}/history"
-    driver.get(url)
-
-    try:
-        elem = driver.find_element_by_css_selector(f'a[download="{ticker}.csv"]')
-
-        if elem.is_displayed():
-            elem.click()
-            time.sleep(2)  # ラズパイ向けにダウンロード待ち
-    except Exception as e:
-        print(e)
-    finally:
-        driver.close()
-        driver.quit()
-        print("Done chrome-headless")
-    '''
