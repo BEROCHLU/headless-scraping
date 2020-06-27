@@ -15,7 +15,7 @@ if __name__ == "__main__":
     # path
     download_folder = "C:\\Users\\sadaco\\Downloads"
     download_path = os.path.join(download_folder, "t1570.csv")
-    chromedriver_path = "T:\\ProgramFilesT\\chromedriver_win32\\chromedriver.exe"
+    chromedriver_path = "T:/ProgramFilesT/chromedriver_win32/chromedriver.exe"
     # pandas
     url = "https://96ut.com/stock/jikei.php?code=1321"
     dfs = pd.read_html(url, header=0, index_col=0)

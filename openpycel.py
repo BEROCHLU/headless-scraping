@@ -17,7 +17,7 @@ def openpycel():
     fxy_path = os.path.join(
         download_folder, "pound-japanese-yen-exchange-rate-historical-chart.csv"
     )
-    xlsx_path = "T:\\mydocs\\BCPad\\data\\nc225.xlsx"
+    xlsx_path = "./xlsx/nc225.xlsx"
 
     book = load_workbook(filename=xlsx_path, data_only=False)  # data_only=Trueで数式削除される
     sheet = book["UPRO"]  # シート変更
