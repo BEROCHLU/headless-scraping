@@ -9,7 +9,7 @@ def delete3files():
 
     lstFile = [
         "t1570.csv",
-        "dollar-yen-exchange-rate-historical-chart.csv",
+        "euro-dollar-exchange-rate-historical-chart.csv",
         "^FTSE.csv",
         "^DJI.csv",
         "pound-japanese-yen-exchange-rate-historical-chart.csv",

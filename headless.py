@@ -36,7 +36,7 @@ if __name__ == "__main__":
     options.add_argument("--window-size=1280, 1024")
     options.add_experimental_option("prefs", prefs)
     # https://www.macrotrends.net/2556/pound-japanese-yen-exchange-rate-historical-chart | https://www.macrotrends.net/2550/dollar-yen-exchange-rate-historical-chart
-    url = "https://www.macrotrends.net/2556/pound-japanese-yen-exchange-rate-historical-chart" #
+    url = "https://www.macrotrends.net/2548/euro-dollar-exchange-rate-historical-chart" #
     driver = webdriver.Chrome(executable_path=chromedriver_path, chrome_options=options)
     driver.implicitly_wait(16)  # 要素が見つかるまで(秒)待機 driverがcloseされない限り有効
     driver.get(url)
