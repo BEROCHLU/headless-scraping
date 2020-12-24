@@ -60,6 +60,7 @@ if __name__ == "__main__":
     dfq = df.query(f'日付 == "{dt_now}"')
 
     if dfq.empty:  # 今日の日付が含まれていない場合
+        #9:00以前であった場合、文字列---を含むのでパス
         url = "https://stocks.finance.yahoo.co.jp/stocks/detail/?code=1321.T"
         driver.get(url)
         try:

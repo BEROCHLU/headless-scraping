@@ -61,12 +61,12 @@ def openpycel():
         cell_C = f"C{i + 2}"  # upro
         cell_E = f"E{i + 2}"  # fxy
         cell_G = f"G{i + 2}"  # t1570
-        # cell_J = f'J{i + 2}'
+        #cell_J = f'M{i + 2}'
 
         sheet[f"B{i + 2}"] = excel.evaluate(cell_C)
         sheet[f"D{i + 2}"] = excel.evaluate(cell_E)
         sheet[f"F{i + 2}"] = excel.evaluate(cell_G)
-        # sheet[f'I{i + 2}'] = excel.evaluate(cell_J)
+        #sheet[f'I{i + 2}'] = excel.evaluate(cell_J)
 
     book.save(xlsx_path)
     book.close()
