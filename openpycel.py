@@ -8,15 +8,13 @@ from openpyxl import load_workbook
 from pycel import ExcelCompiler
 
 
-def openpycel():
+if __name__ == "__main__":
     # path = os.path.dirname(__file__) #get current file path
     download_folder = "C:\\Users\\sadaco\\Downloads"
-    spy_path = os.path.join(download_folder, "^DJI.csv") #^DJI | ^FTSE
+    spy_path = os.path.join(download_folder, "^DJI.csv")  # ^DJI | ^FTSE
     nk_path = os.path.join(download_folder, "t1570.csv")
     # dollar-yen-exchange-rate-historical-chart.csv | pound-japanese-yen-exchange-rate-historical-chart.csv
-    fxy_path = os.path.join(
-        download_folder, "euro-dollar-exchange-rate-historical-chart.csv"
-    )
+    fxy_path = os.path.join(download_folder, "euro-dollar-exchange-rate-historical-chart.csv")
     xlsx_path = "./xlsx/nc225.xlsx"
 
     book = load_workbook(filename=xlsx_path, data_only=False)  # data_only=Trueで数式削除される
@@ -43,7 +41,7 @@ def openpycel():
     with open(fxy_path) as f:
         reader = csv.reader(f)
         for i, row in enumerate(reader):
-            if i < 5160: #12120
+            if i < 5160:  # 12120
                 continue
             else:
                 sheet.append(row)
@@ -61,17 +59,11 @@ def openpycel():
         cell_C = f"C{i + 2}"  # upro
         cell_E = f"E{i + 2}"  # fxy
         cell_G = f"G{i + 2}"  # t1570
-        #cell_J = f'M{i + 2}'
 
         sheet[f"B{i + 2}"] = excel.evaluate(cell_C)
         sheet[f"D{i + 2}"] = excel.evaluate(cell_E)
         sheet[f"F{i + 2}"] = excel.evaluate(cell_G)
-        #sheet[f'I{i + 2}'] = excel.evaluate(cell_J)
 
     book.save(xlsx_path)
     book.close()
     print("Done openpycel")
-
-
-if __name__ == "__main__":
-    openpycel()

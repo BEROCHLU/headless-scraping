@@ -17,11 +17,25 @@ if __name__ == "__main__":
     download_path = os.path.join(download_folder, "t1570.csv")
     chromedriver_path = "T:/ProgramFilesT/chromedriver_win32/chromedriver.exe"
     # pandas
-    url = "https://96ut.com/stock/jikei.php?code=1321"
-    dfs = pd.read_html(url, header=0, index_col=0)
-    df = dfs[0]
-    df = df.sort_values("日付")  # 下が最新になるようにソート
-    df.to_csv(download_path)  # 日付がヘッダーになってないので整形するため一度出力する
+    lst_page = []
+    lst_df = None
+
+    for i in [1, 2]:
+        url = f"https://kabutan.jp/stock/kabuka?code=1321&ashi=day&page={i}"
+        lst_df = pd.read_html(url, header=0, index_col=0)
+        df_page = lst_df[5]
+        lst_page.append(df_page)
+
+    lst_df[4].index.name = "日付"
+    lst_page.append(lst_df[4])
+
+    df_concat = pd.concat(lst_page)  # page結合
+    df_concat = df_concat.sort_values("日付")  # 下が最新になるようにソート
+
+    df_concat = df_concat.reset_index()  # 日付がindexになってるので振り直し
+    df_concat["日付"] = pd.to_datetime(df_concat["日付"], format="%y/%m/%d")  # フォーマット変換 yy/mm/dd => yyyy-mm-dd
+
+    df_concat.to_csv(download_path, index=False, header=True, line_terminator="\n", encoding="utf_8_sig")
     # selenium begin
     options = Options()  # use chrome option
     prefs = {
@@ -36,7 +50,7 @@ if __name__ == "__main__":
     options.add_argument("--window-size=1280, 1024")
     options.add_experimental_option("prefs", prefs)
     # https://www.macrotrends.net/2556/pound-japanese-yen-exchange-rate-historical-chart | https://www.macrotrends.net/2550/dollar-yen-exchange-rate-historical-chart
-    url = "https://www.macrotrends.net/2548/euro-dollar-exchange-rate-historical-chart" #
+    url = "https://www.macrotrends.net/2548/euro-dollar-exchange-rate-historical-chart"
     driver = webdriver.Chrome(executable_path=chromedriver_path, chrome_options=options)
     driver.implicitly_wait(16)  # 要素が見つかるまで(秒)待機 driverがcloseされない限り有効
     driver.get(url)
@@ -53,14 +67,13 @@ if __name__ == "__main__":
         print(e)
         driver.close()  # エラー時、タスクが残らないように終了
         driver.quit()
-    # NK225
+
+    """
     dt_now = datetime.datetime.now()  # 今日の日付取得
     dt_now = dt_now.strftime("%Y/%m/%d")
-
-    dfq = df.query(f'日付 == "{dt_now}"')
-
+    dfq = df_concat.query(f'日付 == "{dt_now}"')
     if dfq.empty:  # 今日の日付が含まれていない場合
-        #9:00以前であった場合、文字列---を含むのでパス
+        # 9:00以前であった場合、文字列---を含むのでパス
         url = "https://stocks.finance.yahoo.co.jp/stocks/detail/?code=1321.T"
         driver.get(url)
         try:
@@ -69,20 +82,20 @@ if __name__ == "__main__":
             str_open = str_open.replace(",", "")  # remove comma
 
             df = pd.read_csv(download_path)  # 出したものを読み込む
-            df = df.append({"日付": dt_now, "初値": str_open}, ignore_index=True)
+            df = df.append({"日付": dt_now, "始値": str_open}, ignore_index=True)
             df.to_csv(download_path, header=True, index=False)  # 最後に出力
         except Exception as e:  # セレクターが見つからなかった場合
             print(e)
-
+    """
     driver.close()
     driver.quit()
 
-    qq = '^DJI' # CVX | ^FTSE | ^DJI
+    qq = "^DJI"  # CVX | ^FTSE | ^DJI
     yft = yf.Ticker(qq)
 
-    dfHist = yft.history(period="1y")
-    dfHist = dfHist.drop(columns=['Dividends', 'Stock Splits'])
-    dfHist = dfHist.dropna(subset=['Open', 'High', 'Low', 'Close']) #OHLCに欠損値''が1つでもあれば行削除
+    dfHist = yft.history(period="6mo")
+    dfHist = dfHist.drop(columns=["Dividends", "Stock Splits"])
+    dfHist = dfHist.dropna(subset=["Open", "High", "Low", "Close"])  # OHLCに欠損値''が1つでもあれば行削除
 
     download_path = os.path.join(download_folder, f"{qq}.csv")
     dfHist.to_csv(download_path)

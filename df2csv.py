@@ -4,7 +4,7 @@
 import pandas as pd
 
 
-def df2csv():
+if __name__ == "__main__":
     xlsx_path = "./xlsx/nc225.xlsx"
 
     df = pd.read_excel(xlsx_path, sheet_name="data")
@@ -15,9 +15,5 @@ def df2csv():
     path_p = "../sakata/json/n225in.json"
 
     df.to_csv(path_c, header=False, index=False, line_terminator="\n")  # C lang
-    df.to_json(path_p, orient="records", indent=4) # nodejs python
+    df.to_json(path_p, orient="records", indent=4)  # nodejs python
     print("Done df2csv")
-
-
-if __name__ == "__main__":
-    df2csv()
