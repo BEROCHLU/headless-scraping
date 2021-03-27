@@ -1,22 +1,23 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+import datetime
+import json
 import os
 import time
-import datetime
+
 import pandas as pd
-import yfinance as yf
+import requests
 
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
-
 
 if __name__ == "__main__":
     # path
     download_folder = "C:\\Users\\sadaco\\Downloads"
     download_path = os.path.join(download_folder, "t1570.csv")
     chromedriver_path = "T:/ProgramFilesT/chromedriver_win32/chromedriver.exe"
-    # pandas
+    # NK
     lst_page = []
     lst_df = None
 
@@ -36,6 +37,31 @@ if __name__ == "__main__":
     df_concat["日付"] = pd.to_datetime(df_concat["日付"], format="%y/%m/%d")  # フォーマット変換 yy/mm/dd => yyyy-mm-dd
 
     df_concat.to_csv(download_path, index=False, header=True, line_terminator="\n", encoding="utf_8_sig")
+    print("Done NK")
+    # DJI
+    f1 = lambda n: datetime.datetime.fromtimestamp(n).strftime("%Y-%m-%d")
+
+    ticker = "^DJI"
+    strRange = "6mo"
+
+    url_chart = f"https://query2.finance.yahoo.com/v8/finance/chart/{ticker}"
+    data_chart = requests.get(url_chart, params={"range": strRange, "interval": "1d"})
+    data_chart = data_chart.json()
+
+    hshResult = data_chart["chart"]["result"][0]
+    hshQuote = hshResult["indicators"]["quote"][0]
+    hshQuote["date"] = hshResult["timestamp"]
+
+    df_quote = pd.DataFrame(hshQuote.values(), index=hshQuote.keys()).T
+    df_quote = df_quote.dropna(subset=["open", "high", "low", "close"])  # OHLCに欠損値''が1つでもあれば行削除
+    df_quote = df_quote.round(2)  # float64 => float32
+
+    df_quote["date"] = df_quote["date"].map(f1)
+    df_quote = df_quote.reindex(columns=["date", "open", "high", "low", "close", "volume"])
+
+    download_path = os.path.join(download_folder, f"{ticker}.csv")
+    df_quote.to_csv(download_path, index=False, header=True, line_terminator="\n")
+    print("Done ^DJI")
     # selenium begin
     options = Options()  # use chrome option
     prefs = {
@@ -65,39 +91,8 @@ if __name__ == "__main__":
             time.sleep(2)  # ラズパイ向けにダウンロード待ち
     except Exception as e:
         print(e)
-        driver.close()  # エラー時、タスクが残らないように終了
+    finally:
+        driver.close()  # 正常及び異常時、タスクが残らないように終了
         driver.quit()
-
-    """
-    dt_now = datetime.datetime.now()  # 今日の日付取得
-    dt_now = dt_now.strftime("%Y/%m/%d")
-    dfq = df_concat.query(f'日付 == "{dt_now}"')
-    if dfq.empty:  # 今日の日付が含まれていない場合
-        # 9:00以前であった場合、文字列---を含むのでパス
-        url = "https://stocks.finance.yahoo.co.jp/stocks/detail/?code=1321.T"
-        driver.get(url)
-        try:
-            str_selector = "div.innerDate div.lineFi.clearfix:nth-of-type(2) dd.ymuiEditLink.mar0 > strong"
-            str_open = driver.find_element_by_css_selector(str_selector).text
-            str_open = str_open.replace(",", "")  # remove comma
-
-            df = pd.read_csv(download_path)  # 出したものを読み込む
-            df = df.append({"日付": dt_now, "始値": str_open}, ignore_index=True)
-            df.to_csv(download_path, header=True, index=False)  # 最後に出力
-        except Exception as e:  # セレクターが見つからなかった場合
-            print(e)
-    """
-    driver.close()
-    driver.quit()
-
-    qq = "^DJI"  # CVX | ^FTSE | ^DJI
-    yft = yf.Ticker(qq)
-
-    dfHist = yft.history(period="6mo")
-    dfHist = dfHist.drop(columns=["Dividends", "Stock Splits"])
-    dfHist = dfHist.dropna(subset=["Open", "High", "Low", "Close"])  # OHLCに欠損値''が1つでもあれば行削除
-
-    download_path = os.path.join(download_folder, f"{qq}.csv")
-    dfHist.to_csv(download_path)
 
     print("Done chrome-headless")

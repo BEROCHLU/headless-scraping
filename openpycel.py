@@ -7,7 +7,6 @@ import os
 from openpyxl import load_workbook
 from pycel import ExcelCompiler
 
-
 if __name__ == "__main__":
     # path = os.path.dirname(__file__) #get current file path
     download_folder = "C:\\Users\\sadaco\\Downloads"
@@ -41,7 +40,7 @@ if __name__ == "__main__":
     with open(fxy_path) as f:
         reader = csv.reader(f)
         for i, row in enumerate(reader):
-            if i < 5160:  # 12120
+            if i < 5471:  # 12120
                 continue
             else:
                 sheet.append(row)
