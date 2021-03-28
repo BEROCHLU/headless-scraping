@@ -4,7 +4,7 @@
 import os
 
 # remove download files
-def delete3files():
+if __name__ == "__main__":
     download_folder = "C:\\Users\\sadaco\\Downloads"
 
     lstFile = [
@@ -21,7 +21,3 @@ def delete3files():
             os.remove(csv_path)
             print(f"removed {csv_file}")
     print("Done delete files")
-
-
-if __name__ == "__main__":
-    delete3files()

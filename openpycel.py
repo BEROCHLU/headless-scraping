@@ -40,7 +40,7 @@ if __name__ == "__main__":
     with open(fxy_path) as f:
         reader = csv.reader(f)
         for i, row in enumerate(reader):
-            if i < 5471:  # 12120
+            if i < 0:  # 5471
                 continue
             else:
                 sheet.append(row)

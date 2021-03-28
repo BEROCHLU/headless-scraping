@@ -9,8 +9,8 @@ import time
 import pandas as pd
 import requests
 
-from selenium import webdriver
-from selenium.webdriver.chrome.options import Options
+#from selenium import webdriver
+#from selenium.webdriver.chrome.options import Options
 
 if __name__ == "__main__":
     # path
@@ -62,7 +62,21 @@ if __name__ == "__main__":
     download_path = os.path.join(download_folder, f"{ticker}.csv")
     df_quote.to_csv(download_path, index=False, header=True, line_terminator="\n")
     print("Done ^DJI")
+
+    f2 = lambda n: datetime.datetime.fromtimestamp(n/1000).strftime("%Y-%m-%d")
+
+    url_eusd = "https://fx.minkabu.jp/api/v2/bar/EURUSD/daily.json"
+    data_eusd = requests.get(url_eusd, params={"count": 128})
+    data_eusd = data_eusd.json()
+
+    df_eusd = pd.DataFrame(data_eusd, columns=['date', 'open', 'high', 'low', 'close'])
+    df_eusd["date"] = df_eusd["date"].map(f2)
+    df_eusd = df_eusd.drop(columns=['open', 'high', 'low'])
+
+    download_path = os.path.join(download_folder, "euro-dollar-exchange-rate-historical-chart.csv")
+    df_eusd.to_csv(download_path, index=False, header=True, line_terminator="\n")
     # selenium begin
+    '''
     options = Options()  # use chrome option
     prefs = {
         "download.prompt_for_download": False,
@@ -94,5 +108,5 @@ if __name__ == "__main__":
     finally:
         driver.close()  # 正常及び異常時、タスクが残らないように終了
         driver.quit()
-
+    '''
     print("Done chrome-headless")
