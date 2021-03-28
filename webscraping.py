@@ -36,7 +36,7 @@ if __name__ == "__main__":
     df_concat.to_csv(download_path, index=False, header=True, line_terminator="\n", encoding="utf_8_sig")
     print("Done NK")
     # DJI
-    f1 = lambda n: datetime.datetime.fromtimestamp(n).strftime("%Y-%m-%d")
+    f1 = lambda ms: datetime.datetime.fromtimestamp(ms).strftime("%Y-%m-%d")
 
     ticker = "^DJI"
     strRange = "6mo"
@@ -60,7 +60,7 @@ if __name__ == "__main__":
     df_quote.to_csv(download_path, index=False, header=True, line_terminator="\n")
     print("Done ^DJI")
     # Currency
-    f2 = lambda n: datetime.datetime.fromtimestamp(n / 1000).strftime("%Y-%m-%d")
+    f2 = lambda ns: datetime.datetime.fromtimestamp(ns / 1000).strftime("%Y-%m-%d")
 
     url_eusd = "https://fx.minkabu.jp/api/v2/bar/EURUSD/daily.json"
     data_eusd = requests.get(url_eusd, params={"count": 128})
@@ -68,7 +68,7 @@ if __name__ == "__main__":
 
     df_eusd = pd.DataFrame(data_eusd, columns=["date", "open", "high", "low", "close"])  # list to dataframe
     df_eusd["date"] = df_eusd["date"].map(f2)  # UNIX time to Datetime
-    df_eusd = df_eusd.drop(columns=["open", "high", "low"])
+    df_eusd = df_eusd.drop(columns=["open", "high", "low"])#いらない列削除
 
     download_path = os.path.join(download_folder, "euro-dollar-exchange-rate-historical-chart.csv")
     df_eusd.to_csv(download_path, index=False, header=True, line_terminator="\n")
