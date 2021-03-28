@@ -9,14 +9,10 @@ import time
 import pandas as pd
 import requests
 
-#from selenium import webdriver
-#from selenium.webdriver.chrome.options import Options
 
 if __name__ == "__main__":
     # path
     download_folder = "C:\\Users\\sadaco\\Downloads"
-    download_path = os.path.join(download_folder, "t1570.csv")
-    chromedriver_path = "T:/ProgramFilesT/chromedriver_win32/chromedriver.exe"
     # NK
     lst_page = []
     lst_df = None
@@ -36,6 +32,7 @@ if __name__ == "__main__":
     df_concat = df_concat.reset_index()  # 日付がindexになってるので振り直し
     df_concat["日付"] = pd.to_datetime(df_concat["日付"], format="%y/%m/%d")  # フォーマット変換 yy/mm/dd => yyyy-mm-dd
 
+    download_path = os.path.join(download_folder, "t1570.csv")
     df_concat.to_csv(download_path, index=False, header=True, line_terminator="\n", encoding="utf_8_sig")
     print("Done NK")
     # DJI
@@ -56,57 +53,23 @@ if __name__ == "__main__":
     df_quote = df_quote.dropna(subset=["open", "high", "low", "close"])  # OHLCに欠損値''が1つでもあれば行削除
     df_quote = df_quote.round(2)  # float64 => float32
 
-    df_quote["date"] = df_quote["date"].map(f1)
-    df_quote = df_quote.reindex(columns=["date", "open", "high", "low", "close", "volume"])
+    df_quote["date"] = df_quote["date"].map(f1)  # UNIX time to Datetime
+    df_quote = df_quote.reindex(columns=["date", "open", "high", "low", "close", "volume"])  # sort columns
 
     download_path = os.path.join(download_folder, f"{ticker}.csv")
     df_quote.to_csv(download_path, index=False, header=True, line_terminator="\n")
     print("Done ^DJI")
-
-    f2 = lambda n: datetime.datetime.fromtimestamp(n/1000).strftime("%Y-%m-%d")
+    # Currency
+    f2 = lambda n: datetime.datetime.fromtimestamp(n / 1000).strftime("%Y-%m-%d")
 
     url_eusd = "https://fx.minkabu.jp/api/v2/bar/EURUSD/daily.json"
     data_eusd = requests.get(url_eusd, params={"count": 128})
     data_eusd = data_eusd.json()
 
-    df_eusd = pd.DataFrame(data_eusd, columns=['date', 'open', 'high', 'low', 'close'])
-    df_eusd["date"] = df_eusd["date"].map(f2)
-    df_eusd = df_eusd.drop(columns=['open', 'high', 'low'])
+    df_eusd = pd.DataFrame(data_eusd, columns=["date", "open", "high", "low", "close"])  # list to dataframe
+    df_eusd["date"] = df_eusd["date"].map(f2)  # UNIX time to Datetime
+    df_eusd = df_eusd.drop(columns=["open", "high", "low"])
 
     download_path = os.path.join(download_folder, "euro-dollar-exchange-rate-historical-chart.csv")
     df_eusd.to_csv(download_path, index=False, header=True, line_terminator="\n")
-    # selenium begin
-    '''
-    options = Options()  # use chrome option
-    prefs = {
-        "download.prompt_for_download": False,
-        "download.directory_upgrade": True,
-        "safebrowsing.enabled": False,
-        "safebrowsing.disable_download_protection": True,
-        "download.default_directory": download_folder,
-    }
-    options.add_argument("--headless")  # ヘッダレスではダウンロード指定必須
-    # fix element is not clickable at point
-    options.add_argument("--window-size=1280, 1024")
-    options.add_experimental_option("prefs", prefs)
-    # https://www.macrotrends.net/2556/pound-japanese-yen-exchange-rate-historical-chart | https://www.macrotrends.net/2550/dollar-yen-exchange-rate-historical-chart
-    url = "https://www.macrotrends.net/2548/euro-dollar-exchange-rate-historical-chart"
-    driver = webdriver.Chrome(executable_path=chromedriver_path, chrome_options=options)
-    driver.implicitly_wait(16)  # 要素が見つかるまで(秒)待機 driverがcloseされない限り有効
-    driver.get(url)
-
-    frame = driver.find_element_by_id("chart_iframe")
-    driver.switch_to.frame(frame)  # iframeにスイッチ
-
-    try:
-        elem = driver.find_element_by_id("dataDownload")
-        if elem.is_displayed():
-            elem.click()
-            time.sleep(2)  # ラズパイ向けにダウンロード待ち
-    except Exception as e:
-        print(e)
-    finally:
-        driver.close()  # 正常及び異常時、タスクが残らないように終了
-        driver.quit()
-    '''
     print("Done chrome-headless")
