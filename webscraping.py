@@ -13,6 +13,7 @@ download_folder = "..\\sakata\\csv"
 # lambda
 f1 = lambda ms: datetime.datetime.fromtimestamp(ms).strftime("%Y-%m-%d")
 f2 = lambda ns: datetime.datetime.fromtimestamp(ns / 1000).strftime("%Y-%m-%d")
+f3 = lambda d: d + datetime.timedelta(days=-3) if d.weekday() == 0 else d + datetime.timedelta(days=-1)
 
 
 def getDataFrame1():
@@ -33,6 +34,7 @@ def getDataFrame1():
 
     df_concat = df_concat.reset_index()  # 日付がindexになってるので振り直し
     df_concat["日付"] = pd.to_datetime(df_concat["日付"], format="%y/%m/%d")  # フォーマット変換 yy/mm/dd => yyyy-mm-dd
+    df_concat["日付"] = df_concat["日付"].map(f3)  # 月曜日だったら先週の金曜日、それ以外は前日
     df_concat["日付"] = df_concat["日付"].dt.strftime("%Y-%m-%d")  # キャスト datetime64 to string
     # df_concat.rename(columns={'日付': 'date'}, inplace=True)
     print("Done NK")
@@ -57,7 +59,7 @@ def getDataFrame2():
 
     df_quote["date"] = df_quote["date"].map(f1)  # UNIX time to Datetime string
     df_quote = df_quote.reindex(columns=["date", "open", "high", "low", "close", "volume"])  # sort columns
-    
+
     print("Done ^DJI")
     return df_quote
 
