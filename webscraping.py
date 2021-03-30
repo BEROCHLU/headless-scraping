@@ -7,13 +7,14 @@ import os
 
 import pandas as pd
 import requests
+import pytz
 
 # path
 download_folder = "..\\sakata\\csv"
 # lambda
-f1 = lambda ms: datetime.datetime.fromtimestamp(ms).strftime("%Y-%m-%d")
-f2 = lambda ns: datetime.datetime.fromtimestamp(ns / 1000).strftime("%Y-%m-%d")
-f3 = lambda d: d + datetime.timedelta(days=-3) if d.weekday() == 0 else d + datetime.timedelta(days=-1)
+f1 = lambda d: d + datetime.timedelta(days=-3) if d.weekday() == 0 else d + datetime.timedelta(days=-1)
+f2 = lambda ms: datetime.datetime.fromtimestamp(ms, tz=pytz.timezone("America/New_York")).strftime("%Y-%m-%d")
+f3 = lambda ns: datetime.datetime.fromtimestamp(ns / 1000).strftime("%Y-%m-%d")
 
 
 def getDataFrame1():
@@ -34,7 +35,7 @@ def getDataFrame1():
 
     df_concat = df_concat.reset_index()  # 日付がindexになってるので振り直し
     df_concat["日付"] = pd.to_datetime(df_concat["日付"], format="%y/%m/%d")  # フォーマット変換 yy/mm/dd => yyyy-mm-dd
-    df_concat["日付"] = df_concat["日付"].map(f3)  # 月曜日だったら先週の金曜日、それ以外は前日
+    df_concat["日付"] = df_concat["日付"].map(f1)  # 月曜日だったら先週の金曜日、それ以外は前日
     df_concat["日付"] = df_concat["日付"].dt.strftime("%Y-%m-%d")  # キャスト datetime64 to string
     # df_concat.rename(columns={'日付': 'date'}, inplace=True)
     print("Done NK")
@@ -57,7 +58,7 @@ def getDataFrame2():
     df_quote = df_quote.dropna(subset=["open", "high", "low", "close"])  # OHLCに欠損値''が1つでもあれば行削除
     df_quote = df_quote.round(2)  # float64 => float32
 
-    df_quote["date"] = df_quote["date"].map(f1)  # UNIX time to Datetime string
+    df_quote["date"] = df_quote["date"].map(f2)  # UNIX time to EDT Datetime string
     df_quote = df_quote.reindex(columns=["date", "open", "high", "low", "close", "volume"])  # sort columns
 
     print("Done ^DJI")
@@ -70,7 +71,7 @@ def getDataFrame3():
     data_eusd = data_eusd.json()
 
     df_eusd = pd.DataFrame(data_eusd, columns=["date", "open", "high", "low", "close"])  # list to dataframe
-    df_eusd["date"] = df_eusd["date"].map(f2)  # UNIX time to Datetime string
+    df_eusd["date"] = df_eusd["date"].map(f3)  # UNIX time to JST Datetime string
     df_eusd = df_eusd.drop(columns=["open", "high", "low"])  # いらない列削除
 
     print("Done Currency")

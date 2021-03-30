@@ -8,6 +8,7 @@ import time
 
 import pandas as pd
 import requests
+import yfinance as yf
 
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
@@ -39,6 +40,7 @@ if __name__ == "__main__":
     df_concat.to_csv(download_path, index=False, header=True, line_terminator="\n", encoding="utf_8_sig")
     print("Done NK")
     # DJI
+    '''
     f1 = lambda n: datetime.datetime.fromtimestamp(n).strftime("%Y-%m-%d")
 
     ticker = "^DJI"
@@ -61,8 +63,18 @@ if __name__ == "__main__":
 
     download_path = os.path.join(download_folder, f"{ticker}.csv")
     df_quote.to_csv(download_path, index=False, header=True, line_terminator="\n")
-    print("Done ^DJI")
+    '''
+    qq = "^DJI"  # CVX | ^FTSE | ^DJI
+    yft = yf.Ticker(qq)
 
+    dfHist = yft.history(period="6mo")
+    dfHist = dfHist.drop(columns=["Dividends", "Stock Splits"])
+    dfHist = dfHist.dropna(subset=["Open", "High", "Low", "Close"])  # OHLCに欠損値''が1つでもあれば行削除
+
+    download_path = os.path.join(download_folder, f"{qq}.csv")
+    dfHist.to_csv(download_path)
+
+    print("Done ^DJI")
     f2 = lambda n: datetime.datetime.fromtimestamp(n/1000).strftime("%Y-%m-%d")
 
     url_eusd = "https://fx.minkabu.jp/api/v2/bar/EURUSD/daily.json"
