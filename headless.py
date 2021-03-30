@@ -7,18 +7,23 @@ import os
 import time
 
 import pandas as pd
+import pytz
 import requests
 import yfinance as yf
-
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 
-if __name__ == "__main__":
-    # path
-    download_folder = "C:\\Users\\sadaco\\Downloads"
-    download_path = os.path.join(download_folder, "t1570.csv")
-    chromedriver_path = "T:/ProgramFilesT/chromedriver_win32/chromedriver.exe"
-    # NK
+# path
+download_folder = "C:\\Users\\sadaco\\Downloads"
+chromedriver_path = "T:/ProgramFilesT/chromedriver_win32/chromedriver.exe"
+
+# lambda
+f1 = lambda d: d + datetime.timedelta(days=-3) if d.weekday() == 0 else d + datetime.timedelta(days=-1)
+f2 = lambda ms: datetime.datetime.fromtimestamp(ms, tz=pytz.timezone("America/New_York")).strftime("%Y-%m-%d")
+f3 = lambda ns: datetime.datetime.fromtimestamp(ns / 1000).strftime("%Y-%m-%d")
+
+
+def read_htmlDownload():
     lst_page = []
     lst_df = None
 
@@ -32,63 +37,38 @@ if __name__ == "__main__":
     lst_page.append(lst_df[4])
 
     df_concat = pd.concat(lst_page)  # page結合
-    df_concat = df_concat.sort_values("日付")  # 下が最新になるようにソート
 
-    df_concat = df_concat.reset_index()  # 日付がindexになってるので振り直し
+    df_concat.sort_values(by="日付", inplace=True)  # 下が最新になるようにソート
+    df_concat.reset_index(inplace=True)  # 日付がindexになってるので振り直し
+
     df_concat["日付"] = pd.to_datetime(df_concat["日付"], format="%y/%m/%d")  # フォーマット変換 yy/mm/dd => yyyy-mm-dd
+    df_concat["日付"] = df_concat["日付"].map(f1)  # 月曜日だったら先週の金曜日、それ以外は前日
+    df_concat["日付"] = df_concat["日付"].dt.strftime("%Y-%m-%d")  # キャスト datetime64 to string
 
+    download_path = os.path.join(download_folder, "t1570.csv")
     df_concat.to_csv(download_path, index=False, header=True, line_terminator="\n", encoding="utf_8_sig")
-    print("Done NK")
-    # DJI
-    '''
-    f1 = lambda n: datetime.datetime.fromtimestamp(n).strftime("%Y-%m-%d")
 
-    ticker = "^DJI"
-    strRange = "6mo"
 
-    url_chart = f"https://query2.finance.yahoo.com/v8/finance/chart/{ticker}"
-    data_chart = requests.get(url_chart, params={"range": strRange, "interval": "1d"})
-    data_chart = data_chart.json()
-
-    hshResult = data_chart["chart"]["result"][0]
-    hshQuote = hshResult["indicators"]["quote"][0]
-    hshQuote["date"] = hshResult["timestamp"]
-
-    df_quote = pd.DataFrame(hshQuote.values(), index=hshQuote.keys()).T
-    df_quote = df_quote.dropna(subset=["open", "high", "low", "close"])  # OHLCに欠損値''が1つでもあれば行削除
-    df_quote = df_quote.round(2)  # float64 => float32
-
-    df_quote["date"] = df_quote["date"].map(f1)
-    df_quote = df_quote.reindex(columns=["date", "open", "high", "low", "close", "volume"])
-
-    download_path = os.path.join(download_folder, f"{ticker}.csv")
-    df_quote.to_csv(download_path, index=False, header=True, line_terminator="\n")
-    '''
-    qq = "^DJI"  # CVX | ^FTSE | ^DJI
+def yfinanceDownload():
+    qq = "^DJI"
     yft = yf.Ticker(qq)
 
     dfHist = yft.history(period="6mo")
-    dfHist = dfHist.drop(columns=["Dividends", "Stock Splits"])
-    dfHist = dfHist.dropna(subset=["Open", "High", "Low", "Close"])  # OHLCに欠損値''が1つでもあれば行削除
+    dfHist.drop(columns=["Dividends", "Stock Splits"], inplace=True)
+    dfHist.dropna(subset=["Open", "High", "Low", "Close"], inplace=True)  # OHLCに欠損値''が1つでもあれば行削除
+    dfHist = dfHist.round(2)
+
+    dfHist.reset_index(inplace=True)
+    dfHist.rename(
+        columns={"Date": "date", "Open": "open", "High": "high", "Low": "low", "Close": "close", "Volume": "volume"},
+        inplace=True,
+    )
 
     download_path = os.path.join(download_folder, f"{qq}.csv")
-    dfHist.to_csv(download_path)
+    dfHist.to_csv(download_path, index=False, header=True, line_terminator="\n")
 
-    print("Done ^DJI")
-    f2 = lambda n: datetime.datetime.fromtimestamp(n/1000).strftime("%Y-%m-%d")
 
-    url_eusd = "https://fx.minkabu.jp/api/v2/bar/EURUSD/daily.json"
-    data_eusd = requests.get(url_eusd, params={"count": 128})
-    data_eusd = data_eusd.json()
-
-    df_eusd = pd.DataFrame(data_eusd, columns=['date', 'open', 'high', 'low', 'close'])
-    df_eusd["date"] = df_eusd["date"].map(f2)
-    df_eusd = df_eusd.drop(columns=['open', 'high', 'low'])
-
-    download_path = os.path.join(download_folder, "euro-dollar-exchange-rate-historical-chart.csv")
-    df_eusd.to_csv(download_path, index=False, header=True, line_terminator="\n")
-    # selenium begin
-    '''
+def seleniumDownload():
     options = Options()  # use chrome option
     prefs = {
         "download.prompt_for_download": False,
@@ -120,5 +100,9 @@ if __name__ == "__main__":
     finally:
         driver.close()  # 正常及び異常時、タスクが残らないように終了
         driver.quit()
-    '''
-    print("Done chrome-headless")
+
+
+if __name__ == "__main__":
+    read_htmlDownload()
+    yfinanceDownload()
+    seleniumDownload()

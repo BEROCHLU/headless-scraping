@@ -37,7 +37,7 @@ def getDataFrame1():
     df_concat["日付"] = pd.to_datetime(df_concat["日付"], format="%y/%m/%d")  # フォーマット変換 yy/mm/dd => yyyy-mm-dd
     df_concat["日付"] = df_concat["日付"].map(f1)  # 月曜日だったら先週の金曜日、それ以外は前日
     df_concat["日付"] = df_concat["日付"].dt.strftime("%Y-%m-%d")  # キャスト datetime64 to string
-    # df_concat.rename(columns={'日付': 'date'}, inplace=True)
+    
     print("Done NK")
     return df_concat
 
