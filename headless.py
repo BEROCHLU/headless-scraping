@@ -15,7 +15,7 @@ from selenium.webdriver.chrome.options import Options
 
 # path
 download_folder = "C:\\Users\\sadaco\\Downloads"
-chromedriver_path = "T:/ProgramFilesT/chromedriver_win32/chromedriver.exe"
+chromedriver_path = "T:\\ProgramFilesT\\chromedriver_win32\\chromedriver.exe"
 
 # lambda
 f1 = lambda d: d + datetime.timedelta(days=-3) if d.weekday() == 0 else d + datetime.timedelta(days=-1)
