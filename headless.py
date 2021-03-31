@@ -7,9 +7,9 @@ import os
 import time
 
 import pandas as pd
-import pytz
 import requests
 import yfinance as yf
+from dateutil import tz
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 
@@ -17,9 +17,10 @@ from selenium.webdriver.chrome.options import Options
 download_folder = "C:\\Users\\sadaco\\Downloads"
 chromedriver_path = "T:\\ProgramFilesT\\chromedriver_win32\\chromedriver.exe"
 
+edt = tz.gettz('America/New_York')
 # lambda
 f1 = lambda d: d + datetime.timedelta(days=-3) if d.weekday() == 0 else d + datetime.timedelta(days=-1)
-f2 = lambda ms: datetime.datetime.fromtimestamp(ms, tz=pytz.timezone("America/New_York")).strftime("%Y-%m-%d")
+f2 = lambda ms: datetime.datetime.fromtimestamp(ms, tz=edt).strftime("%Y-%m-%d")
 f3 = lambda ns: datetime.datetime.fromtimestamp(ns / 1000).strftime("%Y-%m-%d")
 
 
