@@ -14,16 +14,23 @@ from dateutil import tz
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 
-# path
-download_folder = "C:\\Users\\sadaco\\Downloads"
-chromedriver_path = "T:\\ProgramFilesT\\chromedriver_win32\\chromedriver.exe"
+
 # timezone
 edt = tz.gettz("America/New_York")
 # lambda
 f1 = lambda dt: dt + datetime.timedelta(days=-3) if dt.weekday() == 0 else dt + datetime.timedelta(days=-1)
 f2 = lambda dt: dt.strftime("%Y-%m-%d")
-# base
+# hash
 str_k = b"aHR0cHM6Ly9rYWJ1dGFuLmpwL3N0b2NrL2thYnVrYT9jb2RlPTEzMjEmYXNoaT1kYXkmcGFnZT0="
+str_s = b"aHR0cHM6Ly93d3cubWFjcm90cmVuZHMubmV0LzI1NDgvZXVyby1kb2xsYXItZXhjaGFuZ2UtcmF0ZS1oaXN0b3JpY2FsLWNoYXJ0"
+str_c = b"ZXVyby1kb2xsYXItZXhjaGFuZ2UtcmF0ZS1oaXN0b3JpY2FsLWNoYXJ0LmNzdg=="
+str_d = b"QzpcVXNlcnNcc2FkYWNvXERvd25sb2Fkcw=="
+str_p = b"VDpcUHJvZ3JhbUZpbGVzVFxjaHJvbWVkcml2ZXJfd2luMzJcY2hyb21lZHJpdmVyLmV4ZQ=="
+# path
+download_folder = base64.b64decode(str_d).decode()
+chromedriver_path = base64.b64decode(str_p).decode()
+# filename
+csv_file = base64.b64decode(str_c).decode()
 
 
 def getDf_read_html():
@@ -72,7 +79,7 @@ def getDf_yfinance():
 
 
 def getDf_eusd():
-    download_path = os.path.join(download_folder, "euro-dollar-exchange-rate-historical-chart.csv")
+    download_path = os.path.join(download_folder, csv_file)
     df_eusd = pd.read_csv(download_path, header=None, skiprows=5706, names=["date", "close"])
     return df_eusd
 
@@ -90,8 +97,8 @@ def seleniumDownload():
     # fix element is not clickable at point
     options.add_argument("--window-size=1280, 1024")
     options.add_experimental_option("prefs", prefs)
-    # https://www.macrotrends.net/2556/pound-japanese-yen-exchange-rate-historical-chart | https://www.macrotrends.net/2550/dollar-yen-exchange-rate-historical-chart
-    url = "https://www.macrotrends.net/2548/euro-dollar-exchange-rate-historical-chart"
+
+    url = base64.b64decode(str_s).decode()
     driver = webdriver.Chrome(executable_path=chromedriver_path, chrome_options=options)
     driver.implicitly_wait(16)  # 要素が見つかるまで(秒)待機 driverがcloseされない限り有効
     driver.get(url)
@@ -112,12 +119,12 @@ def seleniumDownload():
 
 
 def deleteDownloadfile():
-    csv_file = "euro-dollar-exchange-rate-historical-chart.csv"
     csv_path = os.path.join(download_folder, csv_file)
 
     if os.path.isfile(csv_path):
         os.remove(csv_path)
         print(f"\nremoved {csv_file}")
+
 
 if __name__ == "__main__":
     seleniumDownload()
@@ -128,5 +135,5 @@ if __name__ == "__main__":
     df_merge = pd.merge(df_merge, df_concat, left_on="date", right_on="日付")
     df_merge = df_merge[["date", "close_x", "close_y", "始値"]]
 
-    download_path = os.path.join(download_folder, "n225in.csv")
+    download_path = os.path.join("..\\sakata\\csv", "n225in.csv")
     df_merge.to_csv(download_path, header=False, index=False, line_terminator="\n")
