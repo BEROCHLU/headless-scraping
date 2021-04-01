@@ -17,14 +17,13 @@ from selenium.webdriver.chrome.options import Options
 download_folder = "C:\\Users\\sadaco\\Downloads"
 chromedriver_path = "T:\\ProgramFilesT\\chromedriver_win32\\chromedriver.exe"
 
-edt = tz.gettz('America/New_York')
+edt = tz.gettz("America/New_York")
 # lambda
-f1 = lambda d: d + datetime.timedelta(days=-3) if d.weekday() == 0 else d + datetime.timedelta(days=-1)
-f2 = lambda ms: datetime.datetime.fromtimestamp(ms, tz=edt).strftime("%Y-%m-%d")
-f3 = lambda ns: datetime.datetime.fromtimestamp(ns / 1000).strftime("%Y-%m-%d")
+f1 = lambda dt: dt + datetime.timedelta(days=-3) if dt.weekday() == 0 else dt + datetime.timedelta(days=-1)
+f2 = lambda dt: dt.strftime("%Y-%m-%d")
 
 
-def read_htmlDownload():
+def getDf_read_html():
     lst_page = []
     lst_df = None
 
@@ -46,11 +45,12 @@ def read_htmlDownload():
     df_concat["日付"] = df_concat["日付"].map(f1)  # 月曜日だったら先週の金曜日、それ以外は前日
     df_concat["日付"] = df_concat["日付"].dt.strftime("%Y-%m-%d")  # キャスト datetime64 to string
 
-    download_path = os.path.join(download_folder, "t1570.csv")
-    df_concat.to_csv(download_path, index=False, header=True, line_terminator="\n", encoding="utf_8_sig")
+    # download_path = os.path.join(download_folder, "t1570.csv")
+    # df_concat.to_csv(download_path, index=False, header=True, line_terminator="\n", encoding="utf_8_sig")
+    return df_concat
 
 
-def yfinanceDownload():
+def getDf_yfinance():
     qq = "^DJI"
     yft = yf.Ticker(qq)
 
@@ -64,9 +64,17 @@ def yfinanceDownload():
         columns={"Date": "date", "Open": "open", "High": "high", "Low": "low", "Close": "close", "Volume": "volume"},
         inplace=True,
     )
+    dfHist["date"] = dfHist["date"].dt.strftime("%Y-%m-%d")  # キャスト datetime64 to string
 
-    download_path = os.path.join(download_folder, f"{qq}.csv")
-    dfHist.to_csv(download_path, index=False, header=True, line_terminator="\n")
+    # download_path = os.path.join(download_folder, f"{qq}.csv")
+    # dfHist.to_csv(download_path, index=False, header=True, line_terminator="\n")
+    return dfHist
+
+
+def getDf_eusd():
+    path_eusd = "C:\\Users\\sadaco\\Downloads\\euro-dollar-exchange-rate-historical-chart.csv"
+    df_eusd = pd.read_csv(path_eusd, header=None, skiprows=5706, names=["date", "close"])
+    return df_eusd
 
 
 def seleniumDownload():
@@ -104,6 +112,12 @@ def seleniumDownload():
 
 
 if __name__ == "__main__":
-    read_htmlDownload()
-    yfinanceDownload()
     seleniumDownload()
+    [df_concat, df_quote, df_eusd] = [getDf_read_html(), getDf_yfinance(), getDf_eusd()]
+
+    df_merge = pd.merge(df_quote, df_eusd, on="date")
+    df_merge = pd.merge(df_merge, df_concat, left_on="date", right_on="日付")
+    df_merge = df_merge[["date", "close_x", "close_y", "始値"]]
+
+    download_path = os.path.join(download_folder, "n225in.csv")
+    df_merge.to_csv(download_path, header=False, index=False, line_terminator="\n")

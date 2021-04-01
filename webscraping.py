@@ -73,6 +73,7 @@ def getDataFrame3():
     df_eusd = pd.DataFrame(data_eusd, columns=["date", "open", "high", "low", "close"])  # list to dataframe
     df_eusd["date"] = df_eusd["date"].map(f3)  # UNIX time to JST Datetime string
     df_eusd = df_eusd.drop(columns=["open", "high", "low"])  # いらない列削除
+    df_eusd['close'] = pd.to_numeric(df_eusd['close'], errors='coerce').round(4) # string to round float64
 
     print("Done Currency")
     return df_eusd
