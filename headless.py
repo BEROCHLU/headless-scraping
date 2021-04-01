@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+import base64
 import datetime
 import json
 import os
@@ -21,14 +22,17 @@ edt = tz.gettz("America/New_York")
 # lambda
 f1 = lambda dt: dt + datetime.timedelta(days=-3) if dt.weekday() == 0 else dt + datetime.timedelta(days=-1)
 f2 = lambda dt: dt.strftime("%Y-%m-%d")
+# base
+str_k = b"aHR0cHM6Ly9rYWJ1dGFuLmpwL3N0b2NrL2thYnVrYT9jb2RlPTEzMjEmYXNoaT1kYXkmcGFnZT0="
 
 
 def getDf_read_html():
     lst_page = []
     lst_df = None
+    page = base64.b64decode(str_k).decode()
 
     for i in [1, 2]:
-        url = f"https://kabutan.jp/stock/kabuka?code=1321&ashi=day&page={i}"
+        url = f"{page}{i}"
         lst_df = pd.read_html(url, header=0, index_col=0)
         df_page = lst_df[5]
         lst_page.append(df_page)
@@ -45,8 +49,6 @@ def getDf_read_html():
     df_concat["日付"] = df_concat["日付"].map(f1)  # 月曜日だったら先週の金曜日、それ以外は前日
     df_concat["日付"] = df_concat["日付"].dt.strftime("%Y-%m-%d")  # キャスト datetime64 to string
 
-    # download_path = os.path.join(download_folder, "t1570.csv")
-    # df_concat.to_csv(download_path, index=False, header=True, line_terminator="\n", encoding="utf_8_sig")
     return df_concat
 
 
@@ -66,14 +68,12 @@ def getDf_yfinance():
     )
     dfHist["date"] = dfHist["date"].dt.strftime("%Y-%m-%d")  # キャスト datetime64 to string
 
-    # download_path = os.path.join(download_folder, f"{qq}.csv")
-    # dfHist.to_csv(download_path, index=False, header=True, line_terminator="\n")
     return dfHist
 
 
 def getDf_eusd():
-    path_eusd = "C:\\Users\\sadaco\\Downloads\\euro-dollar-exchange-rate-historical-chart.csv"
-    df_eusd = pd.read_csv(path_eusd, header=None, skiprows=5706, names=["date", "close"])
+    download_path = os.path.join(download_folder, "euro-dollar-exchange-rate-historical-chart.csv")
+    df_eusd = pd.read_csv(download_path, header=None, skiprows=5706, names=["date", "close"])
     return df_eusd
 
 

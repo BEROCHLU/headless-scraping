@@ -19,14 +19,17 @@ f1 = lambda dt: dt + datetime.timedelta(days=-3) if dt.weekday() == 0 else dt + 
 f2 = lambda ms: datetime.datetime.fromtimestamp(ms, tz=edt).strftime("%Y-%m-%d")
 f3 = lambda ns: datetime.datetime.fromtimestamp(ns / 1000).strftime("%Y-%m-%d")  # timestanpがおかしい24H足りない JSTに変換した日付をEDTの日付とみなすと正しい
 # base
-str_base = b'aHR0cHM6Ly9meC5taW5rYWJ1LmpwL2FwaS92Mi9iYXIvRVVSVVNEL2RhaWx5Lmpzb24='
+str_k = b"aHR0cHM6Ly9rYWJ1dGFuLmpwL3N0b2NrL2thYnVrYT9jb2RlPTEzMjEmYXNoaT1kYXkmcGFnZT0="
+str_m = b"aHR0cHM6Ly9meC5taW5rYWJ1LmpwL2FwaS92Mi9iYXIvRVVSVVNEL2RhaWx5Lmpzb24="
+
 
 def getDataFrame1():
     lst_page = []
     lst_df = None
+    page = base64.b64decode(str_k).decode()
 
     for i in [1, 2]:
-        url = f"https://kabutan.jp/stock/kabuka?code=1321&ashi=day&page={i}"
+        url = f"{page}{i}"
         lst_df = pd.read_html(url, header=0, index_col=0)
         df_page = lst_df[5]
         lst_page.append(df_page)
@@ -70,7 +73,7 @@ def getDataFrame2():
 
 
 def getDataFrame3():
-    url = base64.b64decode(str_base).decode()
+    url = base64.b64decode(str_m).decode()
     data_eusd = requests.get(url, params={"count": 128})
     data_eusd = data_eusd.json()
 
