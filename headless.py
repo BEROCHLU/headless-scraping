@@ -111,10 +111,19 @@ def seleniumDownload():
         driver.quit()
 
 
+def deleteDownloadfile():
+    csv_file = "euro-dollar-exchange-rate-historical-chart.csv"
+    csv_path = os.path.join(download_folder, csv_file)
+
+    if os.path.isfile(csv_path):
+        os.remove(csv_path)
+        print(f"\nremoved {csv_file}")
+
 if __name__ == "__main__":
     seleniumDownload()
     [df_concat, df_quote, df_eusd] = [getDf_read_html(), getDf_yfinance(), getDf_eusd()]
-
+    deleteDownloadfile()
+    # vlookup
     df_merge = pd.merge(df_quote, df_eusd, on="date")
     df_merge = pd.merge(df_merge, df_concat, left_on="date", right_on="日付")
     df_merge = df_merge[["date", "close_x", "close_y", "始値"]]
