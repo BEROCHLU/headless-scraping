@@ -7,13 +7,15 @@ import os
 
 import pandas as pd
 import requests
-import pytz
+from dateutil import tz
 
 # path
 download_folder = "..\\sakata\\csv"
+# set timezone
+edt = tz.gettz("America/New_York")
 # lambda
-f1 = lambda d: d + datetime.timedelta(days=-3) if d.weekday() == 0 else d + datetime.timedelta(days=-1)
-f2 = lambda ms: datetime.datetime.fromtimestamp(ms, tz=pytz.timezone("America/New_York")).strftime("%Y-%m-%d")
+f1 = lambda dt: dt + datetime.timedelta(days=-3) if dt.weekday() == 0 else dt + datetime.timedelta(days=-1)
+f2 = lambda ms: datetime.datetime.fromtimestamp(ms, tz=edt).strftime("%Y-%m-%d")
 f3 = lambda ns: datetime.datetime.fromtimestamp(ns / 1000).strftime("%Y-%m-%d")  # timestanpがおかしい24H足りない JSTに変換した日付をEDTの日付とみなすと正しい
 
 
@@ -34,7 +36,7 @@ def getDataFrame1():
     df_concat = df_concat.sort_values("日付")  # 下が最新になるようにソート
 
     df_concat = df_concat.reset_index()  # 日付がindexになってるので振り直し
-    df_concat["日付"] = pd.to_datetime(df_concat["日付"], format="%y/%m/%d")  # フォーマット変換 yy/mm/dd => yyyy-mm-dd
+    df_concat["日付"] = pd.to_datetime(df_concat["日付"], format="%y/%m/%d")  # 日付のフォーマット指定変換 yy/mm/dd => yyyy-mm-dd
     df_concat["日付"] = df_concat["日付"].map(f1)  # 月曜日だったら先週の金曜日、それ以外は前日
     df_concat["日付"] = df_concat["日付"].dt.strftime("%Y-%m-%d")  # キャスト datetime64 to string
 
@@ -73,7 +75,7 @@ def getDataFrame3():
     df_eusd = pd.DataFrame(data_eusd, columns=["date", "open", "high", "low", "close"])  # list to dataframe
     df_eusd["date"] = df_eusd["date"].map(f3)  # UNIX time to JST Datetime string
     df_eusd = df_eusd.drop(columns=["open", "high", "low"])  # いらない列削除
-    df_eusd['close'] = pd.to_numeric(df_eusd['close'], errors='coerce').round(4) # string to round float64
+    df_eusd["close"] = pd.to_numeric(df_eusd["close"], errors="coerce").round(4)  # string to round float64
 
     print("Done Currency")
     return df_eusd
@@ -83,7 +85,7 @@ if __name__ == "__main__":
     # vlookup
     [df_concat, df_quote, df_eusd] = [getDataFrame1(), getDataFrame2(), getDataFrame3()]
 
-    df_merge = pd.merge(df_quote, df_eusd, on="date")
+    df_merge = pd.merge(df_quote, df_eusd, on="date")  # dateをstringで統一することでマージしやすくなる
     df_merge = pd.merge(df_merge, df_concat, left_on="date", right_on="日付")
     df_merge = df_merge[["date", "close_x", "close_y", "始値"]]
 

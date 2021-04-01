@@ -16,7 +16,7 @@ from selenium.webdriver.chrome.options import Options
 # path
 download_folder = "C:\\Users\\sadaco\\Downloads"
 chromedriver_path = "T:\\ProgramFilesT\\chromedriver_win32\\chromedriver.exe"
-
+# timezone
 edt = tz.gettz("America/New_York")
 # lambda
 f1 = lambda dt: dt + datetime.timedelta(days=-3) if dt.weekday() == 0 else dt + datetime.timedelta(days=-1)
