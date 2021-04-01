@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+import base64
 import datetime
 import json
 import os
@@ -17,7 +18,8 @@ edt = tz.gettz("America/New_York")
 f1 = lambda dt: dt + datetime.timedelta(days=-3) if dt.weekday() == 0 else dt + datetime.timedelta(days=-1)
 f2 = lambda ms: datetime.datetime.fromtimestamp(ms, tz=edt).strftime("%Y-%m-%d")
 f3 = lambda ns: datetime.datetime.fromtimestamp(ns / 1000).strftime("%Y-%m-%d")  # timestanpがおかしい24H足りない JSTに変換した日付をEDTの日付とみなすと正しい
-
+# base
+str_base = b'aHR0cHM6Ly9meC5taW5rYWJ1LmpwL2FwaS92Mi9iYXIvRVVSVVNEL2RhaWx5Lmpzb24='
 
 def getDataFrame1():
     lst_page = []
@@ -68,7 +70,7 @@ def getDataFrame2():
 
 
 def getDataFrame3():
-    url = "https://fx.minkabu.jp/api/v2/bar/EURUSD/daily.json"
+    url = base64.b64decode(str_base).decode()
     data_eusd = requests.get(url, params={"count": 128})
     data_eusd = data_eusd.json()
 
