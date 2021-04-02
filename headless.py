@@ -24,10 +24,9 @@ f2 = lambda dt: dt.strftime("%Y-%m-%d")
 str_k = b"aHR0cHM6Ly9rYWJ1dGFuLmpwL3N0b2NrL2thYnVrYT9jb2RlPTEzMjEmYXNoaT1kYXkmcGFnZT0="
 str_s = b"aHR0cHM6Ly93d3cubWFjcm90cmVuZHMubmV0LzI1NDgvZXVyby1kb2xsYXItZXhjaGFuZ2UtcmF0ZS1oaXN0b3JpY2FsLWNoYXJ0"
 str_c = b"ZXVyby1kb2xsYXItZXhjaGFuZ2UtcmF0ZS1oaXN0b3JpY2FsLWNoYXJ0LmNzdg=="
-str_d = b"QzpcVXNlcnNcc2FkYWNvXERvd25sb2Fkcw=="
 str_p = b"VDpcUHJvZ3JhbUZpbGVzVFxjaHJvbWVkcml2ZXJfd2luMzJcY2hyb21lZHJpdmVyLmV4ZQ=="
 # path
-download_folder = base64.b64decode(str_d).decode()
+download_folder = os.path.join(os.environ["USERPROFILE"], "Downloads")
 chromedriver_path = base64.b64decode(str_p).decode()
 # filename
 csv_file = base64.b64decode(str_c).decode()
