@@ -47,7 +47,6 @@ def getDf_read_html():
     lst_page.append(lst_df[4])
 
     df_concat = pd.concat(lst_page)  # page結合
-
     df_concat.sort_values(by="日付", inplace=True)  # 下が最新になるようにソート
     df_concat.reset_index(inplace=True)  # 日付がindexになってるので振り直し
 
@@ -68,10 +67,7 @@ def getDf_yfinance():
     dfHist = dfHist.round(2)
 
     dfHist.reset_index(inplace=True)
-    dfHist.rename(
-        columns={"Date": "date", "Open": "open", "High": "high", "Low": "low", "Close": "close", "Volume": "volume"},
-        inplace=True,
-    )
+    dfHist.rename(columns={"Date": "date", "Open": "open", "High": "high", "Low": "low", "Close": "close", "Volume": "volume"}, inplace=True)
     dfHist["date"] = dfHist["date"].dt.strftime("%Y-%m-%d")  # キャスト datetime64 to string
 
     return dfHist
@@ -93,8 +89,7 @@ def seleniumDownload():
         "download.default_directory": download_folder,
     }
     options.add_argument("--headless")  # ヘッダレスではダウンロード指定必須
-    # fix element is not clickable at point
-    options.add_argument("--window-size=1280, 1024")
+    options.add_argument("--window-size=1280, 1024")  # fix element is not clickable at point
     options.add_experimental_option("prefs", prefs)
 
     url = base64.b64decode(str_s).decode()
