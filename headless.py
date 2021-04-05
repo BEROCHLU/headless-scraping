@@ -14,20 +14,20 @@ from dateutil import tz
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 
-
-# timezone
-edt = tz.gettz("America/New_York")
-# lambda
-f1 = lambda dt: dt + datetime.timedelta(days=-3) if dt.weekday() == 0 else dt + datetime.timedelta(days=-1)
-f2 = lambda dt: dt.strftime("%Y-%m-%d")
 # hash
 str_k = b"aHR0cHM6Ly9rYWJ1dGFuLmpwL3N0b2NrL2thYnVrYT9jb2RlPTEzMjEmYXNoaT1kYXkmcGFnZT0="
 str_s = b"aHR0cHM6Ly93d3cubWFjcm90cmVuZHMubmV0LzI1NDgvZXVyby1kb2xsYXItZXhjaGFuZ2UtcmF0ZS1oaXN0b3JpY2FsLWNoYXJ0"
 str_c = b"ZXVyby1kb2xsYXItZXhjaGFuZ2UtcmF0ZS1oaXN0b3JpY2FsLWNoYXJ0LmNzdg=="
 str_p = b"VDpcUHJvZ3JhbUZpbGVzVFxjaHJvbWVkcml2ZXJfd2luMzJcY2hyb21lZHJpdmVyLmV4ZQ=="
 # path
-download_folder = os.path.join(os.environ["USERPROFILE"], "Downloads")
 chromedriver_path = base64.b64decode(str_p).decode()
+download_folder = os.path.join(os.environ["USERPROFILE"], "Downloads")
+output_folder = "..\\sakata\\csv"
+# timezone
+edt = tz.gettz("America/New_York")
+# lambda
+f1 = lambda dt: dt + datetime.timedelta(days=-3) if dt.weekday() == 0 else dt + datetime.timedelta(days=-1)
+f2 = lambda dt: dt.strftime("%Y-%m-%d")
 # filename
 csv_file = base64.b64decode(str_c).decode()
 
@@ -133,6 +133,9 @@ if __name__ == "__main__":
     df_merge = pd.merge(df_quote, df_eusd, on="date")
     df_merge = pd.merge(df_merge, df_concat, left_on="date", right_on="日付")
     df_merge = df_merge[["date", "close_x", "close_y", "始値"]]
+    df_merge.rename(columns={"始値": "open_t"}, inplace=True)
 
-    download_path = os.path.join("..\\sakata\\csv", "n225in.csv")
-    df_merge.to_csv(download_path, header=False, index=False, line_terminator="\n")
+    download_path = os.path.join(output_folder, "datexyt.csv")
+    df_merge.to_csv(download_path, header=False, index=False, line_terminator="\n")  # for C
+    download_path = os.path.join(output_folder, "hdatexyt.csv")
+    df_merge.to_csv(download_path, header=True, index=False, line_terminator="\n")  # for Python Node.js
