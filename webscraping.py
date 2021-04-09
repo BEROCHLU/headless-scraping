@@ -99,4 +99,3 @@ if __name__ == "__main__":
     df_merge.to_csv(download_path, header=False, index=False, line_terminator="\n")  # for C
     download_path = os.path.join(output_folder, "hdatexyt.csv")
     df_merge.to_csv(download_path, header=True, index=False, line_terminator="\n")  # for Python Node.js
-    # df_merge.to_json("..\\sakata\\json\\hdatexyt.json", orient="records", indent=4) # for Python Node.js
