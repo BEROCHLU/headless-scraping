@@ -28,8 +28,8 @@ def getDataFrame1():
     lst_df = None
     page = base64.b64decode(str_k).decode()
 
-    for i in [1, 2]:
-        url = f"{page}{i}"
+    for i in range(3):
+        url = f"{page}{i+1}"
         lst_df = pd.read_html(url, header=0, index_col=0)
         df_page = lst_df[5]
         lst_page.append(df_page)
