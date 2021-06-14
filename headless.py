@@ -3,12 +3,10 @@
 
 import base64
 import datetime
-import json
 import os
 import time
 
 import pandas as pd
-import requests
 import yfinance as yf
 from dateutil import tz
 from selenium import webdriver
