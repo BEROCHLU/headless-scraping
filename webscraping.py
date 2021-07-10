@@ -12,6 +12,7 @@ from dateutil import tz
 # hash
 str_k = b"aHR0cHM6Ly9rYWJ1dGFuLmpwL3N0b2NrL2thYnVrYT9jb2RlPTEzMjEmYXNoaT1kYXkmcGFnZT0="
 str_m = b"aHR0cHM6Ly9meC5taW5rYWJ1LmpwL2FwaS92Mi9iYXIvRVVSVVNEL2RhaWx5Lmpzb24="
+str_ua = b"TW96aWxsYS81LjAgKE1hY2ludG9zaDsgSW50ZWwgTWFjIE9TIFggMTFfMF8wKSBBcHBsZVdlYktpdC81MzcuMzYgKEtIVE1MLCBsaWtlIEdlY2tvKSBDaHJvbWUvODYuMC40MjQwLjE5OCBTYWZhcmkvNTM3LjM2"
 # path
 output_folder = "..\\sakata\\csv"
 # set timezone
@@ -53,7 +54,9 @@ def getDataFrame2():
     strRange = "6mo"
 
     url = f"https://query2.finance.yahoo.com/v8/finance/chart/{ticker}"
-    data_chart = requests.get(url, params={"range": strRange, "interval": "1d"})
+    ua = base64.b64decode(str_ua).decode()
+
+    data_chart = requests.get(url, params={"range": strRange, "interval": "1d"} , headers={'User-Agent': ua})
     data_chart = data_chart.json()
 
     hshResult = data_chart["chart"]["result"][0]
