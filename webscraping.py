@@ -101,6 +101,6 @@ if __name__ == "__main__":
         os.makedirs(output_folder)  # サブフォルダも同時に再帰的に作成
 
     download_path = os.path.join(output_folder, "datexyt.csv")
-    df_merge.to_csv(download_path, header=False, index=False, line_terminator="\n")  # for C
+    df_merge.to_csv(download_path, header=False, index=False, lineterminator="\n")  # for C
     download_path = os.path.join(output_folder, "hdatexyt.csv")
-    df_merge.to_csv(download_path, header=True, index=False, line_terminator="\n")  # for Python Node.js
+    df_merge.to_csv(download_path, header=True, index=False, lineterminator="\n")  # for Python Node.js
