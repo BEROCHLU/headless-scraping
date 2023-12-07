@@ -1,4 +1,2 @@
 pandas
 lxml
-yfinance
-selenium
