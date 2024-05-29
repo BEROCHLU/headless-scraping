@@ -13,13 +13,16 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
-    - name: Set up Python 3.11
+    - name: Set up Python
       uses: actions/setup-python@v5
       with:
         python-version: "3.11"
         
     - name: Set timezone to Japan Standard Time (JST)
-      run: tzutil /s "Tokyo Standard Time"
+      run: sudo timedatectl set-timezone Asia/Tokyo
+
+    - name: Display current time
+      run: date
       
     - name: Install dependencies
       run: |
