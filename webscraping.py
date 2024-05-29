@@ -51,7 +51,7 @@ def getDataFrame1():
 
 
 def getDataFrame2():
-    ticker = "^DJI"
+    ticker = "^DJI" # ^DJI | ^IXIC
     strRange = "6mo"
 
     url = f"https://query2.finance.yahoo.com/v8/finance/chart/{ticker}"
@@ -71,7 +71,7 @@ def getDataFrame2():
     df_quote["date"] = df_quote["date"].map(f2)  # UNIX time to EDT Datetime string
     df_quote = df_quote.reindex(columns=["date", "open", "high", "low", "close", "volume"])  # sort columns
 
-    print("Done ^DJI")
+    print(f"Done {ticker}")
     return df_quote
 
 
