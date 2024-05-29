@@ -17,6 +17,10 @@ jobs:
       uses: actions/setup-python@v5
       with:
         python-version: "3.11"
+        
+    - name: Set timezone to Japan Standard Time (JST)
+      run: tzutil /s "Tokyo Standard Time"
+      
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
